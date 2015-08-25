@@ -1,8 +1,6 @@
-beacon
+Beacon (sendBeacon)
 ======
 
-Beacon draft spec from webperf
+This specification defines an interoperable means for site developers to asynchronously transfer small HTTP data from the User Agent to a web server.
 
-See
- http://w3c.github.io/beacon/
- 
+Latest draft @  https://w3c.github.io/beacon
