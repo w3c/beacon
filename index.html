@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Beacon</title>
   <meta charset='utf-8'>
-  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class=
+  'remove'>
+  </script>
   <script class='remove'>
   var respecConfig = {
     shortName: "beacon",
@@ -46,65 +47,48 @@
   };
   </script>
 </head>
-
 <body>
-
-
-<section id="abstract">
-
-<p>
-    This specification defines an interoperable means for site developers to asynchronously transfer
-    small HTTP data from the User Agent to a web server.
-</p>
-</section>
-
-  <section id='sotd'>
-    <p>
-      The credential mode is now "include" instead of omit.
-    </p>
+  <section id="abstract">
+    <p>This specification defines an interoperable means for site developers to
+    asynchronously transfer small HTTP data from the User Agent to a web
+    server.</p>
   </section>
-
-<section id="introduction" class='informative'>
-  <h2>Introduction</h2>
-
-  <p>
-    The Beacon specification defines an interface that web developers can use to asynchronously transfer
-    small HTTP data from the User Agent to a web server.
-  </p>
-
-  <p>
-    The specification addresses the needs of analytics and diagnostics code that typically attempt to send data to a web server prior to the unloading
-    of the document. Sending the data any sooner may result in a missed opportunity to gather data. However,
-    ensuring that the data has been sent during the unloading of a document is something that has
-    traditionally been difficult for developers.
-  </p>
-  <p>
-    User agents will typically ignore asynchronous XMLHttpRequests made in an unload handler. To solve this problem,
-    analytics and diagnostics code will typically make a synchronous XMLHttpRequest in an unload or beforeunload handler to submit
-    the data. The synchronous XMLHttpRequest forces the User Agent to delay unloading the document, and makes the
-    next navigation appear to be slower. There is nothing the next page can do to avoid this perception of poor page
-    load performance.
-  </p>
-
-  <p>
-    There are other techniques used to ensure that data is submitted. One such technique is to delay
-    the unload in order to submit data by creating an Image element and setting its <code>src</code> attribute within
-    the unload handler. As most user agents will delay the unload to complete the pending image load, data can be
-    submitted during the unload. Another technique is to create a no-op loop for several seconds within the
-    unload handler to delay the unload and submit data to a server.
-</p>
-
-<p>
-    Not only do these techniques represent poor coding patterns, some of them are unreliable and also result in the
-    perception of poor page load performance for the next navigation.
-</p>
-
-<div>
-    <p>
-        The following example shows a theoretical analytics code that attempts to submit data to a server by
-        using a synchronous XMLHttpRequest in an unload handler. This results in the unload of the page to be delayed.
-    </p>
-<pre class='example highlight'>
+  <section id='sotd'>
+    <p>The credential mode is now "include" instead of omit.</p>
+  </section>
+  <section id="introduction" class='informative'>
+    <h2>Introduction</h2>
+    <p>The Beacon specification defines an interface that web developers can
+    use to asynchronously transfer small HTTP data from the User Agent to a web
+    server.</p>
+    <p>The specification addresses the needs of analytics and diagnostics code
+    that typically attempt to send data to a web server prior to the unloading
+    of the document. Sending the data any sooner may result in a missed
+    opportunity to gather data. However, ensuring that the data has been sent
+    during the unloading of a document is something that has traditionally been
+    difficult for developers.</p>
+    <p>User agents will typically ignore asynchronous XMLHttpRequests made in
+    an unload handler. To solve this problem, analytics and diagnostics code
+    will typically make a synchronous XMLHttpRequest in an unload or
+    beforeunload handler to submit the data. The synchronous XMLHttpRequest
+    forces the User Agent to delay unloading the document, and makes the next
+    navigation appear to be slower. There is nothing the next page can do to
+    avoid this perception of poor page load performance.</p>
+    <p>There are other techniques used to ensure that data is submitted. One
+    such technique is to delay the unload in order to submit data by creating
+    an Image element and setting its <code>src</code> attribute within the
+    unload handler. As most user agents will delay the unload to complete the
+    pending image load, data can be submitted during the unload. Another
+    technique is to create a no-op loop for several seconds within the unload
+    handler to delay the unload and submit data to a server.</p>
+    <p>Not only do these techniques represent poor coding patterns, some of
+    them are unreliable and also result in the perception of poor page load
+    performance for the next navigation.</p>
+    <div>
+      <p>The following example shows a theoretical analytics code that attempts
+      to submit data to a server by using a synchronous XMLHttpRequest in an
+      unload handler. This results in the unload of the page to be delayed.</p>
+      <pre class='example highlight'>
 window.addEventListener('unload', logData, false);
 
 function logData() {
@@ -114,386 +98,418 @@ function logData() {
     client.send(analyticsData);
 }
 </pre>
-</div>
-<p>
-    Using the <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the data will be transmitted asynchronously
-    to the web server when the User Agent has had an opportunity to do so, without delaying the unload or
-    affecting the performance of the next navigation.
-</p>
-
-<div>
-<p>
-    The following example shows a theoretical analytics code pattern that submits data to a server using the by
-    using the <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method.
-</p>
-<pre class='example highlight'>
+    </div>
+    <p>Using the <a href=
+    "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the data
+    will be transmitted asynchronously to the web server when the User Agent
+    has had an opportunity to do so, without delaying the unload or affecting
+    the performance of the next navigation.</p>
+    <div>
+      <p>The following example shows a theoretical analytics code pattern that
+      submits data to a server using the by using the <a href=
+      "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method.</p>
+      <pre class='example highlight'>
 window.addEventListener('unload', logData, false);
 
 function logData() {
     navigator.sendBeacon("/log", analyticsData);
 }
 </pre>
-</div>
-</section>
-
-<section  id="conformance-requirements">
-<h2>Conformance requirements</h2>
-
-<p>All diagrams, examples, and notes in this specification are non-normative,
-as are all sections explicitly marked non-normative. Everything else in this
-specification is normative. </p>
-
-<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHOULD", "SHOULD NOT",
-"RECOMMENDED", "MAY", and "OPTIONAL" in the normative parts of this document
-are to be interpreted as described in [[!RFC2119]].
-For readability, these words do not appear in all uppercase letters in this specification.</p>
-
-<p>Requirements phrased in the imperative as part of algorithms (such as
-"strip any leading space characters" or "return false and abort these steps")
-are to be interpreted with the meaning of the key word ("must", "should",
-"may", etc) used in introducing the algorithm. </p>
-
-<p>Some conformance requirements are phrased as requirements on attributes,
-methods or objects. Such requirements are to be interpreted as requirements
-on user agents. </p>
-
-<p>Conformance requirements phrased as algorithms or specific steps may be
-implemented in any manner, so long as the end result is equivalent. (In
-particular, the algorithms defined in this specification are intended to be
-easy to follow, and not intended to be performant.) </p>
-
-<section id="terminology">
-<h2>Dependencies</h2>
-
-<dl>
-  <dt>DOM</dt>
-  <dd>
-    <p>
-      The following terms are defined in the DOM specification: [[!DOM]]
-    </p>
-    <ul>
-      <li>the <dfn id='document-url'><a href="http://www.w3.org/TR/dom/#concept-document-url">document URL</a></dfn></li>
-      <li><dfn id='document'><a href="http://www.w3.org/TR/dom/#concept-document">document</a></dfn></li>
-      <li><dfn id='throw-a-name-exception'><a href="http://www.w3.org/TR/dom/#concept-throw">throw a name exception</a></dfn></dfn></li>
-      <li>the <dfn id='syntaxerror'><a href="http://www.w3.org/TR/dom/#syntaxerror"><code>SyntaxError</code></a></dfn> error name</li>
-    </ul>
-  </dd>
-  <dt>HTML5</dt>
-  <dd>
-    <p>
-      The following terms are defined in the HTML specification: [[!HTML5]]
-    </p>
-    <ul>
-      <li><dfn id='api-base-url'><a href="http://www.w3.org/TR/html5/webappapis.html#api-base-url">API base URL</a></dfn></li>
-      <li><dfn id='api-referrer-source'><a href="http://www.w3.org/TR/html5/webappapis.html#api-referrer-source">API referrer source</a></dfn></li>
-      <li><dfn id='entry-settings-object'><a href="http://www.w3.org/TR/html5/webappapis.html#entry-settings-object">entry settings object</a></dfn></li>
-      <li><dfn id='multipart-form-data-boundary-string'><a href="http://www.w3.org/TR/html5/forms.html#multipart/form-data-encoding-algorithm"><code>multipart/form-data</code> boundary string</a></dfn></li>
-      <li><dfn id='multipart-form-data-encoding-algorithm'><a href="http://www.w3.org/TR/html5/forms.html#multipart/form-data-boundary-string"><code>multipart/form-data</code> encoding algorithm</a></dfn></li>
-      <li><dfn id='origin'>resource <a href="http://www.w3.org/TR/html5/browsers.html#origin-0">origin</a></dfn></li>
-    </ul>
-  </dd>
-  <dt>Fetch</dt>
-  <dd>
-    <p>
-      The following terms are defined in the HTML specification: [[!FETCH]]
-    </p>
-    <ul>
- <li>header <dfn id='concept-header-value'><a href="http://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
-  <li><dfn id='concept-request'><a href="http://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
-   <li>request <dfn id='concept-request-method'><a href="http://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
-   <li>request <dfn id='concept-request-url'><a href="http://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
-   <li>request <dfn id='concept-request-list'><a href="http://fetch.spec.whatwg.org/#concept-request-header-list">header list</a></dfn></li>
-   <li>request <dfn id='concept-request-origin'><a href="http://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
-   <li>request <dfn id="force-origin-header-flag"><a href="http://fetch.spec.whatwg.org/#force-origin-header-flag">force <code>Origin</code> header flag</a></dfn></li>
-   <li>request <dfn id='concept-request-context'><a href="http://fetch.spec.whatwg.org/#concept-request-context">context</a></dfn></li>
-   <li>request <dfn id='concept-request-referrer'><a href="http://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
-   <li>request <dfn id='concept-request-body'><a href="http://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
-   <li>request <dfn id='concept-request-mode'><a href="http://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
-   <li>request <dfn id='concept-request-credentials-mode'><a href="http://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials mode</a></dfn></li>
-   <li><dfn id='fetch'><a href="http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
-    </ul>
-  </dd>
-  <dt>File API</dt>
-  <dd>
-    <p>
-      The following terms are defined in the File API specification: [[!FILEAPI]]
-    </p>
-    <ul>
-      <li><dfn id='blob'><a href="http://www.w3.org/TR/FileAPI/#blob"><code>Blob</code></a></dfn> interface</li>
-      <li>the <dfn id='type'><a href="http://www.w3.org/TR/FileAPI/#dfn-type"><code>type</code></a></dfn> attribute</li>
-    </ul>
-  </dd>
-  <dt>Typed Array</dt>
-  <dd>
-    <p>
-      The following terms are defined in the Typed Array specification: [[!TYPEDARRAY]]
-    </p>
-    <ul>
-      <li><dfn id='arraybufferview'><a href="http://www.khronos.org/registry/typedarray/specs/latest/#ARRAYBUFFERVIEW"><code>ArrayBufferView</code></a></dfn> interface</li>
-      <li><dfn id='arraybuffer'><a href="http://www.khronos.org/registry/typedarray/specs/latest/#ArrayBuffer"><code>ArrayBuffer</code></a></dfn> interface</li>
-    </ul>
-  </dd>
-  <dt>URL</dt>
-  <dd>
-    <p>
-      The following terms are defined in the URL specification: [[!URL]]
-    </p>
-    <ul>
-      <li><dfn id='url-parser'><a href="http://url.spec.whatwg.org/#concept-url-parser">URL parser</a></dfn></li>
-      <li><dfn id='scheme'><a href="http://url.spec.whatwg.org/#concept-url-scheme">scheme</a></dfn></li>
-    </ul>
-  </dd>
-  <dt>Web IDL</dt>
-  <dd>
-    <p>
-      The IDL fragments in this specification must be interpreted as
-      required for conforming IDL fragments, as described in the Web IDL
-      specification [[!WebIDL]].
-    </p>
-    <p>
-      The following terms are defined in the Web IDL specification:
-    </p>
-    <ul>
-      <li><dfn id='domstring'><a href="http://www.w3.org/TR/WebIDL/#idl-DOMString"><code>DOMString</code></a></dfn> type</li>
-      <li>The algorithm to <dfn><a href="http://www.w3.org/TR/WebIDL/#dfn-obtain-unicode">convert a DOMString to a sequence of Unicode characters</a></dfn></li>
-    </ul>
-  </dd>
-  <dt>XMLHttpRequest</dt>
-  <dd>
-    <p>
-      The following term is defined in the XMLHttpRequest specification: [[!XMLHttpRequest]]
-    </p>
-    <ul>
-      <li><dfn id='formdata'><a href="http://www.w3.org/TR/XMLHttpRequest/#formdata"><code>FormData</code></a></dfn> interface</a></li>
-    </ul>
-  </dd>
-</dl>
-
-</section>
-
-</section>
-
-<section id="sec-beacon">
-<h2>Beacon</h2>
-
-<section id="sec-beacon-introduction" class='informative'>
-<h2>Introduction</h2>
-
-<p>
-    This specification defines an interoperable means for site developers to asynchronously transfer
-    small HTTP data from the User Agent to a web server.
-</p>
-</section>
-
-<section id="sec-sendBeacon-method">
-<h2><code>sendBeacon</code> Method</h2>
-
-<pre class="idl">
+    </div>
+  </section>
+  <section id="conformance-requirements">
+    <h2>Conformance requirements</h2>
+    <p>All diagrams, examples, and notes in this specification are
+    non-normative, as are all sections explicitly marked non-normative.
+    Everything else in this specification is normative.</p>
+    <p>The key words "MUST", "MUST NOT", "REQUIRED", "SHOULD", "SHOULD NOT",
+    "RECOMMENDED", "MAY", and "OPTIONAL" in the normative parts of this
+    document are to be interpreted as described in [[!RFC2119]]. For
+    readability, these words do not appear in all uppercase letters in this
+    specification.</p>
+    <p>Requirements phrased in the imperative as part of algorithms (such as
+    "strip any leading space characters" or "return false and abort these
+    steps") are to be interpreted with the meaning of the key word ("must",
+    "should", "may", etc) used in introducing the algorithm.</p>
+    <p>Some conformance requirements are phrased as requirements on attributes,
+    methods or objects. Such requirements are to be interpreted as requirements
+    on user agents.</p>
+    <p>Conformance requirements phrased as algorithms or specific steps may be
+    implemented in any manner, so long as the end result is equivalent. (In
+    particular, the algorithms defined in this specification are intended to be
+    easy to follow, and not intended to be performant.)</p>
+    <section id="terminology">
+      <h2>Dependencies</h2>
+      <dl>
+        <dt>DOM</dt>
+        <dd>
+          <p>The following terms are defined in the DOM specification:
+          [[!DOM]]</p>
+          <ul>
+            <li>the <dfn id='document-url'><a href=
+            "http://www.w3.org/TR/dom/#concept-document-url">document
+            URL</a></dfn></li>
+            <li><dfn id='document'><a href=
+            "http://www.w3.org/TR/dom/#concept-document">document</a></dfn></li>
+            <li><dfn id='throw-a-name-exception'><a href=
+            "http://www.w3.org/TR/dom/#concept-throw">throw a name
+            exception</a></dfn></li>
+            <li>the <dfn id='syntaxerror'><a href=
+            "http://www.w3.org/TR/dom/#syntaxerror"><code>SyntaxError</code></a></dfn>
+            error name</li>
+          </ul>
+        </dd>
+        <dt>HTML5</dt>
+        <dd>
+          <p>The following terms are defined in the HTML specification:
+          [[!HTML5]]</p>
+          <ul>
+            <li><dfn id='api-base-url'><a href=
+            "http://www.w3.org/TR/html5/webappapis.html#api-base-url">API base
+            URL</a></dfn></li>
+            <li><dfn id='api-referrer-source'><a href=
+            "http://www.w3.org/TR/html5/webappapis.html#api-referrer-source">API
+            referrer source</a></dfn></li>
+            <li><dfn id='entry-settings-object'><a href=
+            "http://www.w3.org/TR/html5/webappapis.html#entry-settings-object">entry
+            settings object</a></dfn></li>
+            <li><dfn id='multipart-form-data-boundary-string'><a href=
+            "http://www.w3.org/TR/html5/forms.html#multipart/form-data-encoding-algorithm">
+            <code>multipart/form-data</code> boundary string</a></dfn></li>
+            <li><dfn id='multipart-form-data-encoding-algorithm'><a href=
+            "http://www.w3.org/TR/html5/forms.html#multipart/form-data-boundary-string">
+            <code>multipart/form-data</code> encoding algorithm</a></dfn></li>
+            <li><dfn id='origin'>resource <a href=
+            "http://www.w3.org/TR/html5/browsers.html#origin-0">origin</a></dfn></li>
+          </ul>
+        </dd>
+        <dt>Fetch</dt>
+        <dd>
+          <p>The following terms are defined in the HTML specification:
+          [[!FETCH]]</p>
+          <ul>
+            <li>header <dfn id='concept-header-value'><a href=
+            "http://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
+            <li><dfn id='concept-request'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
+            <li>request <dfn id='concept-request-method'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
+            <li>request <dfn id='concept-request-url'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
+            <li>request <dfn id='concept-request-list'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-header-list">header
+            list</a></dfn></li>
+            <li>request <dfn id='concept-request-origin'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
+            <li>request <dfn id="force-origin-header-flag"><a href=
+            "http://fetch.spec.whatwg.org/#force-origin-header-flag">force
+            <code>Origin</code> header flag</a></dfn></li>
+            <li>request <dfn id='concept-request-context'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-context">context</a></dfn></li>
+            <li>request <dfn id='concept-request-referrer'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
+            <li>request <dfn id='concept-request-body'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
+            <li>request <dfn id='concept-request-mode'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
+            <li>request <dfn id='concept-request-credentials-mode'><a href=
+            "http://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials
+            mode</a></dfn></li>
+            <li><dfn id='fetch'><a href=
+            "http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
+          </ul>
+        </dd>
+        <dt>File API</dt>
+        <dd>
+          <p>The following terms are defined in the File API specification:
+          [[!FILEAPI]]</p>
+          <ul>
+            <li><dfn id='blob'><a href=
+            "http://www.w3.org/TR/FileAPI/#blob"><code>Blob</code></a></dfn>
+            interface</li>
+            <li>the <dfn id='type'><a href=
+            "http://www.w3.org/TR/FileAPI/#dfn-type"><code>type</code></a></dfn>
+            attribute</li>
+          </ul>
+        </dd>
+        <dt>Typed Array</dt>
+        <dd>
+          <p>The following terms are defined in the Typed Array specification:
+          [[!TYPEDARRAY]]</p>
+          <ul>
+            <li><dfn id='arraybufferview'><a href=
+            "http://www.khronos.org/registry/typedarray/specs/latest/#ARRAYBUFFERVIEW">
+            <code>ArrayBufferView</code></a></dfn> interface</li>
+            <li><dfn id='arraybuffer'><a href=
+            "http://www.khronos.org/registry/typedarray/specs/latest/#ArrayBuffer">
+            <code>ArrayBuffer</code></a></dfn> interface</li>
+          </ul>
+        </dd>
+        <dt>URL</dt>
+        <dd>
+          <p>The following terms are defined in the URL specification:
+          [[!URL]]</p>
+          <ul>
+            <li><dfn id='url-parser'><a href=
+            "http://url.spec.whatwg.org/#concept-url-parser">URL
+            parser</a></dfn></li>
+            <li><dfn id='scheme'><a href=
+            "http://url.spec.whatwg.org/#concept-url-scheme">scheme</a></dfn></li>
+          </ul>
+        </dd>
+        <dt>Web IDL</dt>
+        <dd>
+          <p>The IDL fragments in this specification must be interpreted as
+          required for conforming IDL fragments, as described in the Web IDL
+          specification [[!WebIDL]].</p>
+          <p>The following terms are defined in the Web IDL specification:</p>
+          <ul>
+            <li><dfn id='domstring'><a href=
+            "http://www.w3.org/TR/WebIDL/#idl-DOMString"><code>DOMString</code></a></dfn>
+            type</li>
+            <li>The algorithm to <dfn><a href=
+            "http://www.w3.org/TR/WebIDL/#dfn-obtain-unicode">convert a
+            DOMString to a sequence of Unicode characters</a></dfn></li>
+          </ul>
+        </dd>
+        <dt>XMLHttpRequest</dt>
+        <dd>
+          <p>The following term is defined in the XMLHttpRequest specification:
+          [[!XMLHttpRequest]]</p>
+          <ul>
+            <li><dfn id='formdata'><a href=
+            "http://www.w3.org/TR/XMLHttpRequest/#formdata"><code>FormData</code></a></dfn>
+            interface</li>
+          </ul>
+        </dd>
+      </dl>
+    </section>
+  </section>
+  <section id="sec-beacon">
+    <h2>Beacon</h2>
+    <section id="sec-beacon-introduction" class='informative'>
+      <h2>Introduction</h2>
+      <p>This specification defines an interoperable means for site developers
+      to asynchronously transfer small HTTP data from the User Agent to a web
+      server.</p>
+    </section>
+    <section id="sec-sendBeacon-method">
+      <h2><code>sendBeacon</code> Method</h2>
+      <pre class="idl">
 partial interface <dfn id="Navigator">Navigator</dfn> {
-    boolean <a>sendBeacon</a>(<a>DOMString</a> <var title="url">url</var>, optional (<a>ArrayBufferView</a> or <a>Blob</a> or <a>DOMString</a> or <a>FormData</a>)? <var>data</var> = null);
+    boolean <a>sendBeacon</a>(<a>DOMString</a> <var title=
+"url">url</var>, optional (<a>ArrayBufferView</a> or <a>Blob</a> or <a>DOMString</a> or <a>FormData</a>)? <var>data</var> = null);
 };
 
 partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
-    boolean <a>sendBeacon</a>(DOMString <var title="url">url</var>, optional (<a>ArrayBufferView</a> or <a>Blob</a> or DOMString or <a>FormData</a>)? <var>data</var> = null);
+    boolean <a>sendBeacon</a>(DOMString <var title=
+"url">url</var>, optional (<a>ArrayBufferView</a> or <a>Blob</a> or DOMString or <a>FormData</a>)? <var>data</var> = null);
 };
 </pre>
-
-<p>
-  The <dfn id="dom-navigator-sendbeacon" title="dom-Navigator-sendBeacon"><code>sendBeacon</code></dfn> method transmits data provided by the <a href="#data-parameter"><code>data</code></a> parameter to the URL provided by the <a href="#url-parameter"><code>url</code></a> parameter. User agents MUST ignore any entity bodies returned in the response. User agents MAY close the connection prematurely once they start receiving an entity body. The User Agent SHOULD transmit data at the earliest available opportunity, but MAY prioritize the transmission of data lower compared to other network traffic. The User Agent SHOULD make a best effort attempt to eventually transmit the data.
-
-</p>
-
-<div class="parameters"><h4 id="parameters">Parameters</h4>
-    <h4 id="url-parameter"><code>url</code></h4>
-    <p>
-        The <code>url</code> parameter indicates the URL
-        where the data is to be transmitted.
-    </p>
-
-    <h4 id="data-parameter"><code>data</code></h4>
-    <p>
-        The <code>data</code> parameter is the <a>ArrayBufferView</a>,
-        <a>Blob</a>,
-        <a>DOMString</a>, or <a>FormData</a> data that is to be transmitted.
-    </p>
-
-</div>
-
-<div class="returnvalues"><h4 id="return-values">Return Value</h4>
-    <p>
-        The <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method returns true if the user agent is able to successfully queue the data for transfer. Otherwise it returns false.
-    </p>
-
-    <div class="note">
-    <p>
-        If the User Agent limits the amount of data that can be queued to be sent using this API and the size of
-        <var>data</var> causes that limit to be exceeded, this method returns false. A return value of true
-        implies the browser has queued the data for transfer. However, since the actual data
-        transfer happens asynchronously, this method does not provide any information whether the data transfer has
-        succeeded or not. The actual
-        data transfer may occur after the page has unloaded. To be still an effective mechanism for
-        developers, the User Agent should
-        make the best effort to transmit the data including making multiple attempts to transmit the
-        data in presence of transient network or server errors, even though it uses POST to transmit the data.
-    </p>
-    </div>
-</div>
-</section>
-<section id="sec-processing-model">
-<h2>Processing Model</h2>
-
-  <p>
-      On calling the <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the following steps must be run:
-  </p>
-
-  <ol>
-   <li><p>Set <var>requestTime</var> to current time.
-   <li><p>Set <var>base</var> to the <a>entry settings object</a>'s <a>API base URL</a>.
-
-   <li><p>Set <var>origin</var> to the <a>entry settings object</a>'s
-     <a title='resource origin'>origin</a>.
-
-   <li><p> Set <var>referrer</var> to the <a>entry settings object</a>'s'
-   <a>API referrer source</a>'s
-   <a title='document URL'>URL</a> if
-   <a>entry settings object</a>'s
-   <a>API referrer source</a> is a
-   <a>document</a>, and
-   <a>entry settings object</a>'s
-   <a>API referrer source</a> otherwise
-
-
-
-   <li><p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a> steps with
-   <code>url</code> and <var>base</var>. If the algorithm
-   returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not "http" or "https",
-   <a title='throw a name exception'>throw</a> a
-   "<code><a>SyntaxError</a></code>" exception and terminate
-   these steps.
-
-   <li><p>If <var>data</var> is not null and if the user agent limits the amount of data that can be queued to be sent using this API and the size of <var>data</var> causes that limit to be exceeded, terminate
-   these steps and set the return value to false.</p>
-
-   <li>
-    <p>Otherwise, create the following temporary variables and then follow the rules below: let <var>encoding</var> be null, <var>mimeType</var> be
-    null, <var>headerList</var> be null, and <var>transmittedData</var> be null.</p>
-
-    <dl class="switch">
-
-     <dt>If <var>data</var> is a <code><a>ArrayBuffer</a></code></dt>
-     <dd><p>Let the <var>transmittedData</var> be the raw data
-     represented by <var>data</var>.</dd>
-
-     <dt>If <var>data</var> is a <code class="external"><a>Blob</a></code></dt>
-
-     <dd>
-      <p>If the object's
-      <code class="external"><a>type</a></code>
-      attribute is not the empty string let <var>mimeType</var> be its
-      value.</p>
-
-      <p>Let <var>transmittedData</var> be the raw data represented by <var>data</var>.</p>
-     </dd>
-
-
-     <dt>If <var>data</var> is a <code><a>DOMString</a></code></dt>
-
-     <dd>
-      <p>Let <var>encoding</var> be UTF-8.</p>
-
-      <p>Let <var>mimeType</var> be "<code>text/plain;charset=UTF-8</code>".</p>
-
-      <p>Let the <var>transmittedData</var>  be <var>data</var>
-      <a title="convert a DOMString to a sequence of Unicode characters">converted to Unicode</a>
-      and encoded as UTF-8.</p>
-     </dd>
-
-
-     <dt>If <var>data</var> is a <code><a>FormData</a></code></dt>
-
-     <dd>
-      <p>Let <var>transmittedData</var> be the result of running
-      the
-      <a><code>multipart/form-data</code> encoding algorithm</a>
-      with <var>data</var> as <var>form data set</var> and with UTF-8 as the
-      explicit character encoding.</p>
-
-      <p>Let <var>mimeType</var> be the concatenation of
-      "<code>multipart/form-data;</code>",
-      a U+0020 SPACE character,
-      "<code>boundary=</code>", and the
-      <a><code>multipart/form-data</code> boundary string</a>
-      generated by the
-      <a><code>multipart/form-data</code> encoding algorithm</a>.
-     </dd>
-
-    </dl>
-
-    <li>
-    <p>If <var>mimeType</var> is not null, append a <code>Content-Type</code> header with value
-  <var >mimeType</var> to <var>headerList</var>.
- Append a <code>Accept-Language</code> header with an appropriate
- <a>value</a> to <var>headerList</var>.
- Append a <code>Accept</code> header with <code>*/*</code> as the
- <a>value</a> to <var>headerList</var>.
-
-    <li>
-        Set the return value to true and return the <code>sendBeacon()</code> call, but continue to runs the following steps. These steps may be run
-        even after the document has unloaded.
-    </li>
-
-   <li>
-     <p>Let <var>req</var> be a new
-  <a>request</a>, initialized as follows:
-
-  <dl>
-   <dt><a>method</a>
-   <dd><code>POST</code>
-   <dt><a>url</a>
-   <dd><var>parsedUrl</var>
-   <dt><a>header list</a>
-   <dd><var>headerList</var>
-   <dt><a>origin</a>
-   <dd><var>origin</var>
-   <dt><a>force <code>Origin</code> header flag</a>
-   <dd>set
-   <dt><a>context</a>
-   <dd><i>beacon</i>
-   <dt><a>referrer</a>
-   <dd><var>referrer</var>
-   <dt><a>body</a>
-   <dd><var>transmittedData</var>
-   <dt><a>mode</a>
-   <dd><i>CORS</i>
-   <dt><a>credentials mode</a>
-   <dd><i>include</i>
-  </dl>
-
- <li>
-  <p>Set <var>age</var> to current time minus <var>requestTime</var> expressed in seconds. If <var>age</var> is non-zero, append a <dfn><code>Beacon-Age</code></dfn> header with value <var>age</var> to
-     <a>header list</a> field of
-     <var>req</var>. <a>Fetch</a> <var>req</var>.
-   </li>
-</ol>
-</section>
-
-
-<section id="privacy" class='informative'>
-<h2>Privacy</h2>
-
-<p>This specification does not add extra security or privacy considerations in addition to the ones associated with forms submissions in HTML, as noted
-<a class="external" href="http://www.w3.org/TR/html5/introduction.html#fingerprint" title="HTML privacy concerns">here</a>.
-</p>
-
-</section>
-
-  <section class="appendix">
-    <h2>Acknowledgments</h2>
-
-  <p>
-    We would like to sincerely thank Jonas Sicking, Ilya Grigorik, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas, and others who have helped refine this specification to acknowledge their contributions to this work.
-  </p>
-</section>
-
+      <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
+      method transmits data provided by the <a href=
+      "#data-parameter"><code>data</code></a> parameter to the URL provided by
+      the <a href="#url-parameter"><code>url</code></a> parameter. User agents
+      MUST ignore any entity bodies returned in the response. User agents MAY
+      close the connection prematurely once they start receiving an entity
+      body. The User Agent SHOULD transmit data at the earliest available
+      opportunity, but MAY prioritize the transmission of data lower compared
+      to other network traffic. The User Agent SHOULD make a best effort
+      attempt to eventually transmit the data.</p>
+      <div class="parameters">
+        <h4 id="parameters">Parameters</h4>
+        <h4 id="url-parameter"><code>url</code></h4>
+        <p>The <code>url</code> parameter indicates the URL where the data is
+        to be transmitted.</p>
+        <h4 id="data-parameter"><code>data</code></h4>
+        <p>The <code>data</code> parameter is the <a>ArrayBufferView</a>,
+        <a>Blob</a>, <a>DOMString</a>, or <a>FormData</a> data that is to be
+        transmitted.</p>
+      </div>
+      <div class="returnvalues">
+        <h4 id="return-values">Return Value</h4>
+        <p>The <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a>
+        method returns true if the user agent is able to successfully queue the
+        data for transfer. Otherwise it returns false.</p>
+        <div class="note">
+          <p>If the User Agent limits the amount of data that can be queued to
+          be sent using this API and the size of <var>data</var> causes that
+          limit to be exceeded, this method returns false. A return value of
+          true implies the browser has queued the data for transfer. However,
+          since the actual data transfer happens asynchronously, this method
+          does not provide any information whether the data transfer has
+          succeeded or not. The actual data transfer may occur after the page
+          has unloaded. To be still an effective mechanism for developers, the
+          User Agent should make the best effort to transmit the data including
+          making multiple attempts to transmit the data in presence of
+          transient network or server errors, even though it uses POST to
+          transmit the data.</p>
+        </div>
+      </div>
+    </section>
+    <section id="sec-processing-model">
+      <h2>Processing Model</h2>
+      <p>On calling the <a href=
+      "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the
+      following steps must be run:</p>
+      <ol>
+        <li>
+          <p>Set <var>requestTime</var> to current time.</p>
+        </li>
+        <li>
+          <p>Set <var>base</var> to the <a>entry settings object</a>'s <a>API
+          base URL</a>.</p>
+        </li>
+        <li>
+          <p>Set <var>origin</var> to the <a>entry settings object</a>'s
+          <a href='#origin'>origin</a>.</p>
+        </li>
+        <li>
+          <p>Set <var>referrer</var> to the <a>entry settings object</a>'s'
+          <a>API referrer source</a>'s URL if <a>entry settings object</a>'s
+          <a>API referrer source</a> is a <a>document</a>, and <a>entry
+          settings object</a>'s <a>API referrer source</a> otherwise</p>
+        </li>
+        <li>
+          <p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a>
+          steps with <code>url</code> and <var>base</var>. If the algorithm
+          returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
+          "http" or "https", <a href="#throw-a-name-exception">throw</a> a
+          "<code><a>SyntaxError</a></code>" exception and terminate these
+          steps.</p>
+        </li>
+        <li>
+          <p>If <var>data</var> is not null and if the user agent limits the
+          amount of data that can be queued to be sent using this API and the
+          size of <var>data</var> causes that limit to be exceeded, terminate
+          these steps and set the return value to false.</p>
+        </li>
+        <li>
+          <p>Otherwise, create the following temporary variables and then
+          follow the rules below: let <var>encoding</var> be null,
+          <var>mimeType</var> be null, <var>headerList</var> be null, and
+          <var>transmittedData</var> be null.</p>
+          <dl class="switch">
+            <dt>If <var>data</var> is a <code><a>ArrayBuffer</a></code></dt>
+            <dd>
+              <p>Let the <var>transmittedData</var> be the raw data represented
+              by <var>data</var>.</p>
+            </dd>
+            <dt>If <var>data</var> is a <code class=
+            "external"><a>Blob</a></code></dt>
+            <dd>
+              <p>If the object's <code class="external"><a>type</a></code>
+              attribute is not the empty string let <var>mimeType</var> be its
+              value.</p>
+              <p>Let <var>transmittedData</var> be the raw data represented by
+              <var>data</var>.</p>
+            </dd>
+            <dt>If <var>data</var> is a <code><a>DOMString</a></code></dt>
+            <dd>
+              <p>Let <var>encoding</var> be UTF-8.</p>
+              <p>Let <var>mimeType</var> be
+              "<code>text/plain;charset=UTF-8</code>".</p>
+              <p>Let the <var>transmittedData</var> be <var>data</var> <a href=
+              "#dfn-convert-a-domstring-to-a-sequence-of-unicode-characters">converted
+              to Unicode</a> and encoded as UTF-8.</p>
+            </dd>
+            <dt>If <var>data</var> is a <code><a>FormData</a></code></dt>
+            <dd>
+              <p>Let <var>transmittedData</var> be the result of running the
+              <a><code>multipart/form-data</code> encoding algorithm</a> with
+              <var>data</var> as <var>form data set</var> and with UTF-8 as the
+              explicit character encoding.</p>
+              <p>Let <var>mimeType</var> be the concatenation of
+              "<code>multipart/form-data;</code>", a U+0020 SPACE character,
+              "<code>boundary=</code>", and the
+              <a><code>multipart/form-data</code> boundary string</a> generated
+              by the <a><code>multipart/form-data</code> encoding
+              algorithm</a>.</p>
+            </dd>
+          </dl>
+        </li>
+        <li>
+          <p>If <var>mimeType</var> is not null, append a
+          <code>Content-Type</code> header with value <var>mimeType</var> to
+          <var>headerList</var>. Append a <code>Accept-Language</code> header
+          with an appropriate <a>value</a> to <var>headerList</var>. Append a
+          <code>Accept</code> header with <code>*/*</code> as the <a>value</a>
+          to <var>headerList</var>.</p>
+        </li>
+        <li>Set the return value to true and return the
+        <code>sendBeacon()</code> call, but continue to runs the following
+        steps. These steps may be run even after the document has
+        unloaded.</li>
+        <li>
+          <p>Let <var>req</var> be a new <a>request</a>, initialized as
+          follows:</p>
+          <dl>
+            <dt>
+              <a>method</a>
+            </dt>
+            <dd><code>POST</code></dd>
+            <dt>
+              <a>url</a>
+            </dt>
+            <dd><var>parsedUrl</var></dd>
+            <dt>
+              <a>header list</a>
+            </dt>
+            <dd><var>headerList</var></dd>
+            <dt>
+              <a>origin</a>
+            </dt>
+            <dd><var>origin</var></dd>
+            <dt>
+              <a>force <code>Origin</code> header flag</a>
+            </dt>
+            <dd>set</dd>
+            <dt>
+              <a>context</a>
+            </dt>
+            <dd><i>beacon</i></dd>
+            <dt>
+              <a>referrer</a>
+            </dt>
+            <dd><var>referrer</var></dd>
+            <dt>
+              <a>body</a>
+            </dt>
+            <dd><var>transmittedData</var></dd>
+            <dt>
+              <a>mode</a>
+            </dt>
+            <dd><i>CORS</i></dd>
+            <dt>
+              <a>credentials mode</a>
+            </dt>
+            <dd><i>include</i></dd>
+          </dl>
+        </li>
+        <li>
+          <p>Set <var>age</var> to current time minus <var>requestTime</var>
+          expressed in seconds. If <var>age</var> is non-zero, append a
+          <dfn><code>Beacon-Age</code></dfn> header with value <var>age</var>
+          to <a>header list</a> field of <var>req</var>. <a>Fetch</a>
+          <var>req</var>.</p>
+        </li>
+      </ol>
+    </section>
+    <section id="privacy" class='informative'>
+      <h2>Privacy</h2>
+      <p>This specification does not add extra security or privacy
+      considerations in addition to the ones associated with forms submissions
+      in HTML, as noted <a class="external" href=
+      "http://www.w3.org/TR/html5/introduction.html#fingerprint" title=
+      "HTML privacy concerns">here</a>.</p>
+    </section>
+    <section class="appendix">
+      <h2>Acknowledgments</h2>
+      <p>We would like to sincerely thank Jonas Sicking, Ilya Grigorik, James
+      Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin,
+      Chase Douglas, and others who have helped refine this specification to
+      acknowledge their contributions to this work.</p>
+    </section>
+  </section>
 </body>
 </html>
