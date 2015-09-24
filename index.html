@@ -226,6 +226,8 @@ function logData() {
             mode</a></dfn></li>
             <li><dfn id='fetch'><a href=
             "http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
+            <li><dfn id='bodyinit'><a href=
+            "https://fetch.spec.whatwg.org/#bodyinit">BodyInit</a></dfn></li>
           </ul>
         </dd>
         <dt>File API</dt>
@@ -273,12 +275,9 @@ function logData() {
           specification [[!WebIDL]].</p>
           <p>The following terms are defined in the Web IDL specification:</p>
           <ul>
-            <li><dfn id='domstring'><a href=
-            "http://www.w3.org/TR/WebIDL/#idl-DOMString"><code>DOMString</code></a></dfn>
+            <li><dfn id='usvstring'><a href=
+            "https://heycam.github.io/webidl/#idl-USVString"><code>USVString</code></a></dfn>
             type</li>
-            <li>The algorithm to <dfn><a href=
-            "http://www.w3.org/TR/WebIDL/#dfn-obtain-unicode">convert a
-            DOMString to a sequence of Unicode characters</a></dfn></li>
           </ul>
         </dd>
         <dt>XMLHttpRequest</dt>
@@ -306,13 +305,13 @@ function logData() {
       <h2><code>sendBeacon</code> Method</h2>
       <pre class="idl">
 partial interface <dfn id="Navigator">Navigator</dfn> {
-    boolean <a>sendBeacon</a>(<a>DOMString</a> <var title=
-"url">url</var>, optional (<a>ArrayBufferView</a> or <a>Blob</a> or <a>DOMString</a> or <a>FormData</a>)? <var>data</var> = null);
+    boolean <a>sendBeacon</a>(<a>USVString</a> <var title=
+"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
 };
 
 partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
-    boolean <a>sendBeacon</a>(DOMString <var title=
-"url">url</var>, optional (<a>ArrayBufferView</a> or <a>Blob</a> or DOMString or <a>FormData</a>)? <var>data</var> = null);
+    boolean <a>sendBeacon</a>(USVString <var title=
+"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
 };
 </pre>
       <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
@@ -331,9 +330,8 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         <p>The <code>url</code> parameter indicates the URL where the data is
         to be transmitted.</p>
         <h4 id="data-parameter"><code>data</code></h4>
-        <p>The <code>data</code> parameter is the <a>ArrayBufferView</a>,
-        <a>Blob</a>, <a>DOMString</a>, or <a>FormData</a> data that is to be
-        transmitted.</p>
+        <p>The <code>data</code> parameter is the <a>BodyInit</a> data that is
+        to be transmitted.</p>
       </div>
       <div class="returnvalues">
         <h4 id="return-values">Return Value</h4>
@@ -393,49 +391,16 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
           size of <var>data</var> causes that limit to be exceeded, terminate
           these steps and set the return value to false.</p>
         </li>
-        <li>
-          <p>Otherwise, create the following temporary variables and then
-          follow the rules below: let <var>encoding</var> be null,
-          <var>mimeType</var> be null, <var>headerList</var> be null, and
-          <var>transmittedData</var> be null.</p>
-          <dl class="switch">
-            <dt>If <var>data</var> is a <code><a>ArrayBuffer</a></code></dt>
-            <dd>
-              <p>Let the <var>transmittedData</var> be the raw data represented
-              by <var>data</var>.</p>
-            </dd>
-            <dt>If <var>data</var> is a <code class=
-            "external"><a>Blob</a></code></dt>
-            <dd>
-              <p>If the object's <code class="external"><a>type</a></code>
-              attribute is not the empty string let <var>mimeType</var> be its
-              value.</p>
-              <p>Let <var>transmittedData</var> be the raw data represented by
-              <var>data</var>.</p>
-            </dd>
-            <dt>If <var>data</var> is a <code><a>DOMString</a></code></dt>
-            <dd>
-              <p>Let <var>encoding</var> be UTF-8.</p>
-              <p>Let <var>mimeType</var> be
-              "<code>text/plain;charset=UTF-8</code>".</p>
-              <p>Let the <var>transmittedData</var> be <var>data</var> <a href=
-              "#dfn-convert-a-domstring-to-a-sequence-of-unicode-characters">converted
-              to Unicode</a> and encoded as UTF-8.</p>
-            </dd>
-            <dt>If <var>data</var> is a <code><a>FormData</a></code></dt>
-            <dd>
-              <p>Let <var>transmittedData</var> be the result of running the
-              <a><code>multipart/form-data</code> encoding algorithm</a> with
-              <var>data</var> as <var>form data set</var> and with UTF-8 as the
-              explicit character encoding.</p>
-              <p>Let <var>mimeType</var> be the concatenation of
-              "<code>multipart/form-data;</code>", a U+0020 SPACE character,
-              "<code>boundary=</code>", and the
-              <a><code>multipart/form-data</code> boundary string</a> generated
-              by the <a><code>multipart/form-data</code> encoding
-              algorithm</a>.</p>
-            </dd>
-          </dl>
+        <li>Otherwise, create the following temporary variables:
+          <ul>
+            <li>
+              <a href=
+              "https://fetch.spec.whatwg.org/#concept-bodyinit-extract">Extract</a>
+              object's byte stream (<var>transmittedData</var>) and MIME type
+              (<var>mimeType</var>).
+            </li>
+            <li>Let <var>headerList</var> be null.</li>
+          </ul>
         </li>
         <li>
           <p>If <var>mimeType</var> is not null, append a
