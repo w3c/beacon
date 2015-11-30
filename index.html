@@ -546,14 +546,12 @@ Beacon-Age = "Beacon-Age" ":" 1*DIGIT
       the need for the widespread use of expensive anti-patterns that block
       user interaction, and to enable more efficient scheduling and use of
       system resources. The same functionality is possible today, albeit with
-      high performance costs and degraged user experience. As such,
-      <code>sendBeacon</code> does not add new privacy considerations.</p>
+      high performance costs and degraged user experience.</p>
+      <p><code>sendBeacon</code> does not add new privacy considerations. However, implementers should take the following precautions:</p>
       <ul>
-        <li>The user agent must not store or defer delivery of beacon data
-        indefinitely, as that may lead to loss of critical application
-        data.</li>
-        <li>The user agent must not skip or throttle delivery of beacon data,
+        <li>The user agent should not skip or throttle delivery of beacon data,
         as it may lead to loss of critical application data.</li>
+        <li>The user agent should not store or defer delivery of beacon data indefinitely, as that may expose additional data when delivered - e.g. user's location via new IP address of the device.</li>
       </ul>
     </section>
     <section>
@@ -580,10 +578,7 @@ Beacon-Age = "Beacon-Age" ":" 1*DIGIT
     </section>
     <section class="appendix">
       <h2>Acknowledgments</h2>
-      <p>We would like to sincerely thank Jonas Sicking, Nick Doty, James
-      Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin,
-      Chase Douglas, and others who have helped refine this specification to
-      acknowledge their contributions to this work.</p>
+      <p>Sincere thanks to Jonas Sicking, Nick Doty, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas, and Anne van Kesteren for their helpful comments and contributions to this work.</p>
     </section>
   </section>
 </body>
