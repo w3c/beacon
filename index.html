@@ -70,73 +70,115 @@
 </head>
 <body>
   <section id="abstract">
-    <p>This specification defines an interoperable means for site developers to
-    asynchronously transfer small HTTP data from the User Agent to a web
-    server.</p>
+    <p>This specification defines an interface that web developers can use to
+    schedule asynchronous and non-blocking delivery of data that minimizes
+    resource contention with other time-critical operations, while ensuring
+    that such requests are still processed and delivered to destination.</p>
   </section>
   <section id='sotd'>
     <p>The credential mode is now "include" instead of omit.</p>
   </section>
   <section id="introduction" class='informative'>
     <h2>Introduction</h2>
-    <p>The Beacon specification defines an interface that web developers can
-    use to asynchronously transfer small HTTP data from the User Agent to a web
-    server.</p>
-    <p>The specification addresses the needs of analytics and diagnostics code
-    that typically attempt to send data to a web server prior to the unloading
-    of the document. Sending the data any sooner may result in a missed
-    opportunity to gather data. However, ensuring that the data has been sent
-    during the unloading of a document is something that has traditionally been
-    difficult for developers.</p>
-    <p>User agents will typically ignore asynchronous XMLHttpRequests made in
-    an unload handler. To solve this problem, analytics and diagnostics code
-    will typically make a synchronous XMLHttpRequest in an unload or
-    beforeunload handler to submit the data. The synchronous XMLHttpRequest
-    forces the User Agent to delay unloading the document, and makes the next
-    navigation appear to be slower. There is nothing the next page can do to
-    avoid this perception of poor page load performance.</p>
-    <p>There are other techniques used to ensure that data is submitted. One
-    such technique is to delay the unload in order to submit data by creating
-    an Image element and setting its <code>src</code> attribute within the
-    unload handler. As most user agents will delay the unload to complete the
-    pending image load, data can be submitted during the unload. Another
-    technique is to create a no-op loop for several seconds within the unload
-    handler to delay the unload and submit data to a server.</p>
-    <p>Not only do these techniques represent poor coding patterns, some of
-    them are unreliable and also result in the perception of poor page load
-    performance for the next navigation.</p>
-    <div>
-      <p>The following example shows a theoretical analytics code that attempts
-      to submit data to a server by using a synchronous XMLHttpRequest in an
-      unload handler. This results in the unload of the page to be delayed.</p>
-      <pre class='example highlight'>
-window.addEventListener('unload', logData, false);
+    <p>Web applications often need to issue requests that report events, state
+    updates, and analytics to one or more servers. Such requests typically do
+    not require response processing on the client (e.g. result in 204, or 200
+    HTTP response codes with an empty response body), and should not compete
+    for network and compute resources with other high priority operations such
+    as fetching critical resources, reacting to input, running animations, and
+    so on. However, such one-way requests (beacons), are also responsible for
+    delivering critical application and measurement data, forcing developers to
+    use costly methods to ensure their delivery:</p>
+    <ul>
+      <li>Developers opt for immediate delivery of each beacon, instead of
+      coalescing and deferring their delivery because this provides improved
+      delivery rates. Deferring delivery may mean that the beacon request may
+      not have sufficient time to complete successfully, which leads to loss of
+      important application data.</li>
+      <li>Developers opt for issuing blocking requests via synchronous
+      XMLHttpRequest's, inserting no-op busy loops, or using other techniques
+      that block the user agent from executing time-critical operations (e.g.
+      click, unload, and other handlers) and hurt the user experience. The
+      blocking behavior is used to provide improved delivery rate, as it
+      prevents the user agent and the operating system from cancelling the
+      request if the page is unloaded, suspended, or killed by the system.</li>
+    </ul>
+    <p>The mismatch between above delivery and processing requirements leaves
+    most developers with a tough choice and widespread adoption of blocking
+    techniques that hurt the user experience. This specification defines an
+    interface that web developers can use to schedule asynchronous and
+    non-blocking delivery of data that minimizes resource contention with other
+    time-critical operations, while ensuring that such requests are still
+    processed and delivered to destination:</p>
+    <ul>
+      <li>Beacon requests are prioritized to avoid competing with time-critical
+      operations and higher priority network requests.</li>
+      <li>Beacon requests may be efficiently coalesced by the user agent to
+      optimize energy use on mobile devices.</li>
+      <li>Beacon requests are guaranteed to be initiated before page is
+      unloaded and are allowed to run to completion without requiring blocking
+      requests or other techniques that block processing of user interactive
+      events.</li>
+    </ul>
+    <p>The following example shows use of the <code>sendBeacon</code> method to
+    deliver event, click, and analytics data:</p>
+    <pre class='example highlight'>
+      &lt;html&gt;
+      &lt;script&gt;
+        // emit non-blocking beacon to record state update
+        function reportEvent(eventData) {
+          navigator.sendBeacon('/collector', eventData);
+        }
 
-function logData() {
-    var client = new XMLHttpRequest();
-    client.open("POST", "/log", false); // third parameter indicates sync xhr
-    client.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-    client.send(analyticsData);
-}
-</pre>
-    </div>
-    <p>Using the <a href=
-    "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the data
-    will be transmitted asynchronously to the web server when the User Agent
-    has had an opportunity to do so, without delaying the unload or affecting
-    the performance of the next navigation.</p>
-    <div>
-      <p>The following example shows a theoretical analytics code pattern that
-      submits data to a server using the by using the <a href=
-      "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method.</p>
-      <pre class='example highlight'>
-window.addEventListener('unload', logData, false);
+        // emit non-blocking beacon to record click on a link
+        function reportClick(url) {
+          var clickData = JSON.stringify({
+            clickTo: url,
+            clickAt: performance.now()
+          });
+          navigator.sendBeacon('/collector', clickData);
+        }
 
-function logData() {
-    navigator.sendBeacon("/log", analyticsData);
-}
+        // emit non-blocking beacon when page transitions to background state
+        document.addEventListener('visibilitychange', function() {
+          if (document.visiblityState === 'hidden') {
+            var analyticsData = buildSessionReport();
+            navigator.sendBeacon('/collector', analyticsData);
+          }
+        });
+      &lt;/script&gt;
+
+      &lt;body&gt;
+       &lt;a href='http://www.w3.org/' onclick='reportClick(this)'&gt;
+       &lt;button onclick="reportEvent('event!')"&gt;Click me&lt;/button&gt;
+      &lt;/body&gt;
+      &lt;/html&gt;
 </pre>
-    </div>
+    <p class="note">Above example uses <code>visibilitychange</code> event
+    defined in [[PAGE-VISIBILITY]] to trigger delivery of session data. This
+    event is the only event that is guaranteed to fire on mobile devices when
+    the page transitions to background state (e.g. when user switches to a
+    different application, goes to homescreen, etc), or is being unloaded.
+    Developers should avoid relying on <code>unload</code> event because it
+    will not fire whenever a page in background state (i.e.
+    <code>visiblityState</code> equal to <code>hidden</code>) and the process
+    is terminated by the mobile OS.</p>
+    <p>The requests initiated via the <code>sendBeacon</code> method do not
+    block or compete with time-critical work, may be prioritized by the user
+    agent to improve network efficiency, and eliminate the need to use blocking
+    operations to ensure delivery of beacon data.</p>
+    <p>What <code>sendBeacon</code> does not do and is not intented to
+    solve:</p>
+    <ul>
+      <li>The <code>sendBeacon</code> method does not provide special handling
+      for offline storage or delivery. A beacon request is like any other
+      request and may be combined with [[SERVICE-WORKERS]] to provide offline
+      functionality where necessary.</li>
+      <li>The <code>sendBeacon</code> method is not intended to provide
+      background synchronization or transfer capabilities. The user agent is
+      allowed to restrict the maximum accepted payload size to ensure that
+      beacon requests are able to complete quickly and in a timely manner.</li>
+    </ul>
   </section>
   <section id="conformance-requirements">
     <h2>Conformance requirements</h2>
@@ -154,7 +196,7 @@ function logData() {
     "should", "may", etc) used in introducing the algorithm.</p>
     <p>Some conformance requirements are phrased as requirements on attributes,
     methods or objects. Such requirements are to be interpreted as requirements
-    on user agents.</p>
+    on the user agent.</p>
     <p>Conformance requirements phrased as algorithms or specific steps may be
     implemented in any manner, so long as the end result is equivalent. (In
     particular, the algorithms defined in this specification are intended to be
@@ -307,12 +349,6 @@ function logData() {
   </section>
   <section id="sec-beacon">
     <h2>Beacon</h2>
-    <section id="sec-beacon-introduction" class='informative'>
-      <h2>Introduction</h2>
-      <p>This specification defines an interoperable means for site developers
-      to asynchronously transfer small HTTP data from the User Agent to a web
-      server.</p>
-    </section>
     <section id="sec-sendBeacon-method">
       <h2><code>sendBeacon</code> Method</h2>
       <pre class="idl">
@@ -329,13 +365,32 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
       <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
       method transmits data provided by the <a href=
       "#data-parameter"><code>data</code></a> parameter to the URL provided by
-      the <a href="#url-parameter"><code>url</code></a> parameter. User agents
-      MUST ignore any entity bodies returned in the response. User agents MAY
-      close the connection prematurely once they start receiving an entity
-      body. The User Agent SHOULD transmit data at the earliest available
-      opportunity, but MAY prioritize the transmission of data lower compared
-      to other network traffic. The User Agent SHOULD make a best effort
-      attempt to eventually transmit the data.</p>
+      the <a href="#url-parameter"><code>url</code></a> parameter, according to
+      the following rules:</p>
+      <ul>
+        <li>The user agent SHOULD restrict the maximum <code>data</code> size
+        to ensure that beacon requests are able to complete quickly and in a
+        timely manner.</li>
+        <li>The user agent SHOULD schedule transmission of provided data to
+        minimize resource (CPU and network) contention with other time-critical
+        and high priority work.</li>
+        <li>The user agent MAY delay transmission of provided data to optimize
+        network and energy efficiency - e.g. deliver immediately if the network
+        is active, or wait until network interface is active. However, the user
+        agent SHOULD NOT delay transmission indefinitely and ensure that
+        pending transmissions are periodically flushed even if there is no
+        other network activity.</li>
+        <li>The user agent MUST schedule immediate transmission of all beacon
+        requests when the document <code>visiblityState</code>
+        ([[!PAGE-VISIBILITY]]) transitions to <code>hidden</code>, and must
+        allow all such requests to run to completion without blocking other
+        time-critical and high-priority work.</li>
+        <li>The user agent MUST NOT skip or throttle processing of beacon
+        requests, as it may contain critical application state, events, and
+        analytics data.</li>
+        <li>The user agent MUST process the response headers, and if provided,
+        MUST ignore any entity bodies in the response.</li>
+      </ul>
       <div class="parameters">
         <h4 id="parameters">Parameters</h4>
         <h4 id="url-parameter"><code>url</code></h4>
@@ -350,20 +405,13 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         <p>The <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a>
         method returns true if the user agent is able to successfully queue the
         data for transfer. Otherwise it returns false.</p>
-        <div class="note">
-          <p>If the User Agent limits the amount of data that can be queued to
-          be sent using this API and the size of <var>data</var> causes that
-          limit to be exceeded, this method returns false. A return value of
-          true implies the browser has queued the data for transfer. However,
-          since the actual data transfer happens asynchronously, this method
-          does not provide any information whether the data transfer has
-          succeeded or not. The actual data transfer may occur after the page
-          has unloaded. To be still an effective mechanism for developers, the
-          User Agent should make the best effort to transmit the data including
-          making multiple attempts to transmit the data in presence of
-          transient network or server errors, even though it uses POST to
-          transmit the data.</p>
-        </div>
+        <p class="note">If the user agent limits the amount of data that can be
+        queued to be sent using this API and the size of <var>data</var> causes
+        that limit to be exceeded, this method returns false. A return value of
+        true implies the browser has queued the data for transfer. However,
+        since the actual data transfer happens asynchronously, this method does
+        not provide any information whether the data transfer has succeeded or
+        not.</p>
       </div>
     </section>
     <section id="sec-processing-model">
@@ -492,12 +540,19 @@ Beacon-Age = "Beacon-Age" ":" 1*DIGIT
 </pre>
     </section>
     <section id="privacy" class='informative'>
-      <h2>Privacy</h2>
-      <p>This specification does not add extra security or privacy
-      considerations in addition to the ones associated with forms submissions
-      in HTML, as noted <a class="external" href=
-      "http://www.w3.org/TR/html5/introduction.html#fingerprint" title=
-      "HTML privacy concerns">here</a>.</p>
+      <h2>Privacy and Security</h2>
+      <p>The <code>sendBeacon</code> interface provides an asynchronous and
+      non-blocking mechanism for delivery of data. It is designed to eliminate
+      the need for the widespread use of expensive anti-patterns that block
+      user interaction, and to enable more efficient scheduling and use of
+      system resources. The same functionality is possible today, albeit with
+      high performance costs and degraged user experience.</p>
+      <p><code>sendBeacon</code> does not add new privacy considerations. However, implementers should take the following precautions:</p>
+      <ul>
+        <li>The user agent should not skip or throttle delivery of beacon data,
+        as it may lead to loss of critical application data.</li>
+        <li>The user agent should not store or defer delivery of beacon data indefinitely, as that may expose additional data when delivered - e.g. user's location via new IP address of the device.</li>
+      </ul>
     </section>
     <section>
       <h2>IANA Considerations</h2>
@@ -523,10 +578,7 @@ Beacon-Age = "Beacon-Age" ":" 1*DIGIT
     </section>
     <section class="appendix">
       <h2>Acknowledgments</h2>
-      <p>We would like to sincerely thank Jonas Sicking, Ilya Grigorik, James
-      Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin,
-      Chase Douglas, and others who have helped refine this specification to
-      acknowledge their contributions to this work.</p>
+      <p>Sincere thanks to Jonas Sicking, Nick Doty, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas, and Anne van Kesteren for their helpful comments and contributions to this work.</p>
     </section>
   </section>
 </body>
