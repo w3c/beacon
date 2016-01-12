@@ -414,9 +414,6 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
       following steps must be run:</p>
       <ol>
         <li>
-          <p>Set <var>requestTime</var> to current time.</p>
-        </li>
-        <li>
           <p>Set <var>base</var> to the <a>entry settings object</a>'s <a>API
           base URL</a>.</p>
         </li>
@@ -505,23 +502,9 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
           </dl>
         </li>
         <li>
-          <p>Set <var>age</var> to current time minus <var>requestTime</var>
-          expressed in seconds. If <var>age</var> is non-zero, append a
-          <dfn><code>Beacon-Age</code></dfn> header with value <var>age</var>
-          to <a>header list</a> field of <var>req</var>.</p>
-        </li>
-        <li>
           <a>Fetch</a> <var>req</var>.
         </li>
       </ol>
-      <p>The <dfn>Beacon-Age header field</dfn> is used to communicate the time
-      delay, measured in seconds, between the time when the request is sent and
-      the <i>requestTime</i> set when <a>sendBeacon</a> method is called. The
-      ABNF (Augmented Backus-Naur Form) syntax for the <a>Beacon-Age header
-      field</a> is as follows:</p>
-      <pre>
-Beacon-Age = "Beacon-Age" ":" 1*DIGIT
-</pre>
     </section>
     <section id="privacy" class='informative'>
       <h2>Privacy and Security</h2>
@@ -537,28 +520,6 @@ Beacon-Age = "Beacon-Age" ":" 1*DIGIT
         as it may lead to loss of critical application data.</li>
         <li>The user agent should not store or defer delivery of beacon data indefinitely, as that may expose additional data when delivered - e.g. user's location via new IP address of the device.</li>
       </ul>
-    </section>
-    <section>
-      <h2>IANA Considerations</h2>
-      <p>The permanent message header field registry should be updated with the
-      following registrations ([[RFC3864]]):</p>
-      <section>
-        <h2>Beacon-Age</h2>
-        <dl>
-          <dt>Header field name</dt>
-          <dd>Beacon-Age</dd>
-          <dt>Applicable protocol</dt>
-          <dd>http</dd>
-          <dt>Status</dt>
-          <dd>standard</dd>
-          <dt>Author/Change controller</dt>
-          <dd>W3C</dd>
-          <dt>Specification document</dt>
-          <dd>
-            This specification (see <a>Beacon-Age Header Field</a>)
-          </dd>
-        </dl>
-      </section>
     </section>
     <section class="appendix">
       <h2>Acknowledgments</h2>
