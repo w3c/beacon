@@ -357,8 +357,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
       <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
       method transmits data provided by the <a href=
       "#data-parameter"><code>data</code></a> parameter to the URL provided by
-      the <a href="#url-parameter"><code>url</code></a> parameter, according to
-      the following rules:</p>
+      the <a href="#url-parameter"><code>url</code></a> parameter:</p>
       <ul>
         <li>The user agent SHOULD restrict the maximum <code>data</code> size
         to ensure that beacon requests are able to complete quickly and in a
@@ -372,6 +371,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         agent SHOULD NOT delay transmission indefinitely and ensure that
         pending transmissions are periodically flushed even if there is no
         other network activity.</li>
+          <div class="note">See Fetch API + request coalescing discussion: <a href="https://github.com/whatwg/fetch/issues/184">https://github.com/whatwg/fetch/issues/184</a></div>
         <li>The user agent MUST schedule immediate transmission of all beacon
         requests when the document <code>visiblityState</code>
         ([[!PAGE-VISIBILITY]]) transitions to <code>hidden</code>, and must
@@ -380,9 +380,10 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         <li>The user agent MUST NOT skip or throttle processing of beacon
         requests, as it may contain critical application state, events, and
         analytics data.</li>
-        <li>The user agent MUST process the response headers, and if provided,
-        MUST ignore any entity bodies in the response.</li>
       </ul>
+
+      <div class="note">Beacon API does not provide a response callback. The server should not provide a response body for such requests, and the client may terminate responses that contain a body - e.g. cancel the HTTP/2 stream, or abort the HTTP/1 connection.</div>
+
       <div class="parameters">
         <h4 id="parameters">Parameters</h4>
         <h4 id="url-parameter"><code>url</code></h4>
