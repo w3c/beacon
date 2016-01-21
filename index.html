@@ -370,8 +370,8 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         is active, or wait until network interface is active. However, the user
         agent SHOULD NOT delay transmission indefinitely and ensure that
         pending transmissions are periodically flushed even if there is no
-        other network activity.</li>
-          <div class="note">See Fetch API + request coalescing discussion: <a href="https://github.com/whatwg/fetch/issues/184">https://github.com/whatwg/fetch/issues/184</a></div>
+        other network activity.
+          <div class="note">See Fetch API + request coalescing discussion: <a href="https://github.com/whatwg/fetch/issues/184">https://github.com/whatwg/fetch/issues/184</a></div></li>
         <li>The user agent MUST schedule immediate transmission of all beacon
         requests when the document <code>visiblityState</code>
         ([[!PAGE-VISIBILITY]]) transitions to <code>hidden</code>, and must
