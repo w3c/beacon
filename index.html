@@ -19,6 +19,11 @@
       company: "Google",
       w3cid: "56102"
     }, {
+      name: "Todd Reifsteck",
+      mailto: "toddreif@microsoft.com",
+      company: "Microsoft",
+      w3cid: "76565"
+    }, {
       name: "Alois Reitbauer",
       mailto: "alois.reitbauer@compuware.com",
       company: "Compuware Corp.",
@@ -37,7 +42,7 @@
       w3cid: "44357"
     }],
     wg: "Web Performance Working Group",
-    wgURI: "http://www.w3.org/2010/webperf/",
+    wgURI: "https://www.w3.org/2010/webperf/",
     wgPublicList: "public-web-perf",
     noLegacyStyle: true,
     otherLinks: [{
@@ -249,30 +254,30 @@
           [[!FETCH]]</p>
           <ul>
             <li>header <dfn id='concept-header-value'><a href=
-            "http://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
             <li><dfn id='concept-request'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
             <li>request <dfn id='concept-request-method'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
             <li>request <dfn id='concept-request-url'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
             <li>request <dfn id='concept-request-list'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-header-list">header
+            "https://fetch.spec.whatwg.org/#concept-request-header-list">header
             list</a></dfn></li>
             <li>request <dfn id='concept-request-origin'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
             <li><dfn id='concept-omit-origin-header-flag'><a href='https://fetch.spec.whatwg.org/#omit-origin-header-flag'><code>Origin</code> header flag</a></dfn></li>
             <li>request <dfn id='concept-request-referrer'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
             <li>request <dfn id='concept-request-body'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
             <li>request <dfn id='concept-request-mode'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
             <li>request <dfn id='concept-request-credentials-mode'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials
+            "https://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials
             mode</a></dfn></li>
             <li><dfn id='fetch'><a href=
-            "http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
             <li><dfn id='bodyinit'><a href=
             "https://fetch.spec.whatwg.org/#bodyinit">BodyInit</a></dfn></li>
           </ul>
@@ -325,6 +330,9 @@
             <li><dfn id='usvstring'><a href=
             "https://heycam.github.io/webidl/#idl-USVString"><code>USVString</code></a></dfn>
             type</li>
+            <li><dfn id='bytestring'><a href=
+            "https://heycam.github.io/webidl/#idl-ByteString"><code>ByteString</code></a></dfn>
+            type</li>
           </ul>
         </dd>
         <dt>XMLHttpRequest</dt>
@@ -345,20 +353,28 @@
     <section id="sec-sendBeacon-method">
       <h2><code>sendBeacon</code> Method</h2>
       <pre class="idl">
-partial interface <dfn id="Navigator">Navigator</dfn> {
-    boolean <a>sendBeacon</a>(<a>USVString</a> <var title=
-"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
+partial interface Navigator {
+    boolean sendBeacon((USVString or BeaconRequest) requestInfo, optional BodyInit? data = null);
 };
 
-partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
-    boolean <a>sendBeacon</a>(USVString <var title=
-"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
+partial interface WorkerNavigator {
+    boolean sendBeacon((USVString or BeaconRequest) requestInfo, optional BodyInit? data = null);
+};
+
+[Constructor(BeaconRequestInit init), Exposed=(Window,Worker)]
+interface BeaconRequest {
+    attribute ByteString method;
+    attribute USVString url;
+};
+
+dictionary BeaconRequestInit {
+    ByteString method;
+    USVString url;
 };
 </pre>
       <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
-      method transmits data provided by the <a href=
-      "#data-parameter"><code>data</code></a> parameter to the URL provided by
-      the <a href="#url-parameter"><code>url</code></a> parameter:</p>
+      method makes a fetch to the url specified by the <a href="#requestInfo-parameter"><code>requestInfo</code></a> parameter
+      and transmits the <a href="#data-parameter"><code>data</code></a> parameter:</p>
       <ul>
         <li>The user agent SHOULD restrict the maximum <code>data</code> size
         to ensure that beacon requests are able to complete quickly and in a
@@ -384,12 +400,11 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
 
       <div class="parameters">
         <h4 id="parameters">Parameters</h4>
-        <h4 id="url-parameter"><code>url</code></h4>
-        <p>The <code>url</code> parameter indicates the URL where the data is
-        to be transmitted.</p>
+        <h4 id="requestInfo-parameter"><code>requestInfo</code></h4>
+        <p>The <code>requestInfo</code> parameter either indicates the URL where the data is
+        to be POSTed if its type is USVString or it is a <code><a>BeaconRequest</a></code> containing the URL and method.</p>
         <h4 id="data-parameter"><code>data</code></h4>
-        <p>The <code>data</code> parameter is the <a>BodyInit</a> data that is
-        to be transmitted.</p>
+        <p>The <code>data</code> parameter is the <code><a>BodyInit</a></code> data that is to be transmitted.</p>
       </div>
       <div class="returnvalues">
         <h4 id="return-values">Return Value</h4>
@@ -405,8 +420,8 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         not.</p>
       </div>
     </section>
-    <section id="sec-processing-model">
-      <h2>Processing Model</h2>
+    <section id="sec-processing-model">   
+      <h2>Processing Model for sendBeacon</h2>
       <p>On calling the <a href=
       "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the
       following steps must be run:</p>
@@ -424,14 +439,40 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
           <a>API referrer source</a>'s URL if <a>entry settings object</a>'s
           <a>API referrer source</a> is a <a>document</a>, and <a>entry
           settings object</a>'s <a>API referrer source</a> otherwise</p>
+        </li>        
+        <li>
+          If requestInfo is<code><a> USVString</a></code>:
+            <ol type='a'>
+              <li>Set <var>parsedUrl</var> to requestInfo.
+              <li>Set <var>inputMethod</var> to 'POST'.
+            </ol>          
         </li>
+        <p></p>        
+        <li>If <code>requestInfo</code> is a <code><a>BeaconRequest</a></code>:
+          <ol type='a'>
+            <li>Set <var>parsedUrl</var> to <code>requestInfo.url</code>.
+            <li>If <code>requestInfo</code>'s <code>method</code> member is missing, set <var>inputMethod</var> 
+            to 'POST'.
+            <li>If <code>requestInfo</code>'s <code>method</code> member is present, set <var>inputMethod</var> 
+            to <code>requestInfo.method</code> and run these substeps:
+              <ol type='i'> 
+                <li>If <var>inputMethod</var> is not a <a href="https://fetch.spec.whatwg.org/#concept-method">
+                method</a> or <var>inputMethod</var>
+                is a <a href="https://fetch.spec.whatwg.org/#forbidden-method">forbidden method</a>,
+                <a href="#throw-a-name-exception">throw</a> a <code>TypeError</code>.
+                <li><a href="https://fetch.spec.whatwg.org/#concept-method-normalize">Normalize</a> <var>inputMethod</var>. 
+              </ol>
+          </ol>        
         <li>
           <p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a>
-          steps with <code>url</code> and <var>base</var>. If the algorithm
+          steps with <var>parsedUrl</var> and <var>base</var>. If the algorithm
           returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
           "http" or "https", <a href="#throw-a-name-exception">throw</a> a
           "<code><a>SyntaxError</a></code>" exception and terminate these
           steps.</p>
+        </li>
+        <li>
+          <p>If <code><a href="#data-parameter">data</a></code> is present and is non-null and inputMethod is `GET` or `HEAD`, <a href="#throw-a-name-exception">throw</a> a TypeError.</p>
         </li>
         <li>
           <p>If <var>data</var> is not null and if the user agent limits the
@@ -469,7 +510,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
             <dt>
               <a>method</a>
             </dt>
-            <dd><code>POST</code></dd>
+            <dd><var>inputMethod</var></dd>
             <dt>
               <a>url</a>
             </dt>
@@ -515,7 +556,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
       <p>The delivered data might contain potentially sensitive information, for example, data about a user's activity on a web page, to a server. While this can have privacy implications for the user, existing methods, such as scripted form-submit, image beacons, and XHR/fetch requests provide similar capabilities, but come with various and costly performance tradeoffs: the requests can be aborted by the user agent unless the developer blocks the user agent from processing other events (e.g. by invoking a synchronous request, or spinning in an empty loop), and the user agent is unable to prioritize and coalesce such requests to optimize use of system resources.</p>
       <p>A request initiated by sendBeacon is subject to following properties:</p>
       <ul>
-        <li>If the payload is one of <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, or <code>text/plain</code>, then the request is a simple request that does not require an additional CORS-preflight; same as scripted form-post or XHR/fetch.</li>
+        <li>If the method is a <a href="https://fetch.spec.whatwg.org/#simple-method">simple method</a> ('GET', 'HEAD' or 'POST'), the payload is one of <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, or <code>text/plain</code>, then the request is a simple request that does not require an additional CORS-preflight; same as scripted form-post or XHR/fetch.</li>
         <li>Otherwise, if the payload is a <code>Blob</code> and the resulting <code>Content-Type</code> is not a <a href="https://fetch.spec.whatwg.org/#simple-header">simple header</a>, then a CORS preflight is made and the server needs to first allow such requests by returning the appropriate set of CORS headers (<code>Access-Control-Allow-Credentials</code>, <code>Access-Control-Allow-Origin</code>, <code>Access-Control-Allow-Headers</code>); same as XHR/fetch.</li>
       </ul>
       <p>As such, from the security perspective, the Beacon API is subject to all the same security policies as the current methods in use by developers. Similarly, from the privacy perspective, the resulting requests are initiated immediately when the API is called, or upon a page visibility change, which restricts the exposed information (e.g. user's IP address) to existing lifecycle events accessible to the developers. However, user agents might consider alternative methods to surface such requests to provide transparency to users.</p>
@@ -523,7 +564,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
     </section>
     <section class="appendix">
       <h2>Acknowledgments</h2>
-      <p>Sincere thanks to Jonas Sicking, Nick Doty, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas, and Anne van Kesteren for their helpful comments and contributions to this work.</p>
+      <p>Sincere thanks to Jonas Sicking, Nick Doty, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas and Anne van Kesteren for their helpful comments and contributions to this work.</p>
     </section>
   </section>
 </body>
