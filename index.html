@@ -372,7 +372,7 @@ partial interface GlobalFetch {
 dictionary BeaconRequestInit {
     ByteString method = "POST";
     HeadersInit headers;
-    BodyInit? body;
+    BodyInit? body = null;
 };
       </pre>
       <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn> and 
@@ -454,8 +454,8 @@ dictionary BeaconRequestInit {
       "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the
       following steps must be run:</p>
       <ol>
-          <li><p>Call fetchBeacon(url, {body:data}). If an exception is thrown, 
-          return false. Otherwise, return true.</p>
+          <li><p>Begin the fetchBeacon processing model with the parameters url and {body:data}.
+          If an exception is thrown, return false. Otherwise, return true.</p>
       </ol>
       <h2>Processing Model for fetchBeacon</h2>
       <p>On calling the <a href=
