@@ -354,7 +354,7 @@
   <section id="sec-beacon">
     <h2>Beacon</h2>
     <section id="sec-beacon-methods">
-      <h2><code>sendBeacon</code> Method</h2>
+      <h2>Methods</h2>
       <pre class="idl">
 partial interface Navigator {
     boolean sendBeacon(USVString url, optional BodyInit? data = null);
@@ -379,7 +379,7 @@ dictionary BeaconRequestInit {
       <dfn id="dom-navigator-fetchbeacon"><code>fetchBeacon</code></dfn> methods make 
       a fetch to the url specified by the <a href="#url-parameter"><code>url</code></a> parameter
       and transmit the <a href="#data-parameter"><code>data</code></a> parameter 
-      for <code>sendBeacon</code> and the <a href="#init-parameter"><code>init></code></a>
+      for <code>sendBeacon</code> and the <a href="#init-parameter"><code>init</code></a>
       parameter for <code>fetchBeacon</code>:</p>
       <ul>
         <li>The user agent SHOULD restrict the maximum <code>data</code> size
@@ -436,10 +436,9 @@ dictionary BeaconRequestInit {
         and <a>BodyInit</a> data to make the beacon request.</p>
       </div>
       <div class="returnvalues">
-        <h4 id="fetch-return-values">Return Value</h4>
-        <p>The <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a>
-        method returns true if the user agent is able to successfully queue the
-        data for transfer. Otherwise it returns false.</p>
+        <h4 id="fetch-return-values">fetchBeacon Return Value</h4>
+        <p>The <a href="#dom-navigator-fetchbeacon"><code>fetchBeacon</code></a>
+        method returns void.</p>
         <p class="note">If the user agent limits the amount of data that can be
         queued to be sent using this API and the size of <var>body</var> causes
         that limit to be exceeded, <code>fetchBeacon</code> will throw. If
@@ -471,7 +470,7 @@ dictionary BeaconRequestInit {
           <a href='#origin'>origin</a>.</p>
         </li>
         <li>
-          <p>Set <var>referrer</var> to the <a>entry settings object</a>'s'
+          <p>Set <var>referrer</var> to the <a>entry settings object</a>'s
           <a>API referrer source</a>'s URL if <a>entry settings object</a>'s
           <a>API referrer source</a> is a <a>document</a>, and <a>entry
           settings object</a>'s <a>API referrer source</a> otherwise</p>
