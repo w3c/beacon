@@ -19,6 +19,11 @@
       company: "Google",
       w3cid: "56102"
     }, {
+      name: "Todd Reifsteck",
+      mailto: "toddreif@microsoft.com",
+      company: "Microsoft",
+      w3cid: "76565"
+    }, {
       name: "Alois Reitbauer",
       mailto: "alois.reitbauer@compuware.com",
       company: "Compuware Corp.",
@@ -37,7 +42,7 @@
       w3cid: "44357"
     }],
     wg: "Web Performance Working Group",
-    wgURI: "http://www.w3.org/2010/webperf/",
+    wgURI: "https://www.w3.org/2010/webperf/",
     wgPublicList: "public-web-perf",
     noLegacyStyle: true,
     otherLinks: [{
@@ -121,26 +126,26 @@
       requests or other techniques that block processing of user interactive
       events.</li>
     </ul>
-    <p>The following example shows use of the <code>sendBeacon</code> method to
+    <p>The following example shows use of the <code>fetchBeacon</code> method to
     deliver event, click, and analytics data:</p>
     <pre class='example highlight'>
       &lt;html&gt;
       &lt;script&gt;
-        // emit non-blocking beacon to record client-side event
+        // emit non-blocking beacon to record client-side event via URL and HEAD
         function reportEvent(event) {
           var data = JSON.stringify({
             event: event,
             time: performance.now()
           });
-          navigator.sendBeacon('/collector', data);
+          fetchBeacon('/collector?data=47', {method:'HEAD'});
         }
 
         // emit non-blocking beacon with session analytics as the page
-        // transitions to background state (Page Visibility API)
+        // transitions to background state (Page Visibility API) via POST with body
         document.addEventListener('visibilitychange', function() {
           if (document.visiblityState === 'hidden') {
             var sessionData = buildSessionReport();
-            navigator.sendBeacon('/collector', sessionData);
+            fetchBeacon('/collector', {method:'POST', body:sessionData});
           }
         });
       &lt;/script&gt;
@@ -160,18 +165,18 @@
     will not fire whenever a page in background state (i.e.
     <code>visiblityState</code> equal to <code>hidden</code>) and the process
     is terminated by the mobile OS.</p>
-    <p>The requests initiated via the <code>sendBeacon</code> method do not
+    <p>The requests initiated via the <code>sendBeacon</code> and <code>fetchBeacon</code> methods do not
     block or compete with time-critical work, may be prioritized by the user
     agent to improve network efficiency, and eliminate the need to use blocking
     operations to ensure delivery of beacon data.</p>
-    <p>What <code>sendBeacon</code> does not do and is not intended to
+    <p>What <code>sendBeacon</code> and <code>fetchBeacon</code> do not do and are not intended to
     solve:</p>
     <ul>
-      <li>The <code>sendBeacon</code> method does not provide special handling
+      <li>The <code>sendBeacon</code> and <code>fetchBeacon</code> methods do not provide special handling
       for offline storage or delivery. A beacon request is like any other
       request and may be combined with [[SERVICE-WORKERS]] to provide offline
       functionality where necessary.</li>
-      <li>The <code>sendBeacon</code> method is not intended to provide
+      <li>The <code>sendBeacon</code> and <code>fetchBeacon</code> methods are not intended to provide
       background synchronization or transfer capabilities. The user agent is
       allowed to restrict the maximum accepted payload size to ensure that
       beacon requests are able to complete quickly and in a timely manner.</li>
@@ -249,32 +254,35 @@
           [[!FETCH]]</p>
           <ul>
             <li>header <dfn id='concept-header-value'><a href=
-            "http://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
             <li><dfn id='concept-request'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
             <li>request <dfn id='concept-request-method'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
             <li>request <dfn id='concept-request-url'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
             <li>request <dfn id='concept-request-list'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-header-list">header
+            "https://fetch.spec.whatwg.org/#concept-request-header-list">header
             list</a></dfn></li>
             <li>request <dfn id='concept-request-origin'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
             <li><dfn id='concept-omit-origin-header-flag'><a href='https://fetch.spec.whatwg.org/#omit-origin-header-flag'><code>Origin</code> header flag</a></dfn></li>
             <li>request <dfn id='concept-request-referrer'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
             <li>request <dfn id='concept-request-body'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
             <li>request <dfn id='concept-request-mode'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
             <li>request <dfn id='concept-request-credentials-mode'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials
+            "https://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials
             mode</a></dfn></li>
             <li><dfn id='fetch'><a href=
-            "http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
+            "https://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
             <li><dfn id='bodyinit'><a href=
             "https://fetch.spec.whatwg.org/#bodyinit">BodyInit</a></dfn></li>
+            <li><dfn id='headersinit'><a href=
+            "https://fetch.spec.whatwg.org/#headersinit">HeadersInit</a></dfn></li>
+            
           </ul>
         </dd>
         <dt>File API</dt>
@@ -325,6 +333,9 @@
             <li><dfn id='usvstring'><a href=
             "https://heycam.github.io/webidl/#idl-USVString"><code>USVString</code></a></dfn>
             type</li>
+            <li><dfn id='bytestring'><a href=
+            "https://heycam.github.io/webidl/#idl-ByteString"><code>ByteString</code></a></dfn>
+            type</li>
           </ul>
         </dd>
         <dt>XMLHttpRequest</dt>
@@ -342,23 +353,34 @@
   </section>
   <section id="sec-beacon">
     <h2>Beacon</h2>
-    <section id="sec-sendBeacon-method">
-      <h2><code>sendBeacon</code> Method</h2>
+    <section id="sec-beacon-methods">
+      <h2>Methods</h2>
       <pre class="idl">
-partial interface <dfn id="Navigator">Navigator</dfn> {
-    boolean <a>sendBeacon</a>(<a>USVString</a> <var title=
-"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
+partial interface Navigator {
+    boolean sendBeacon(USVString url, optional BodyInit? data = null);
 };
 
-partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
-    boolean <a>sendBeacon</a>(USVString <var title=
-"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
+partial interface WorkerNavigator {
+    boolean sendBeacon(USVString url, optional BodyInit? data = null);
 };
-</pre>
-      <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
-      method transmits data provided by the <a href=
-      "#data-parameter"><code>data</code></a> parameter to the URL provided by
-      the <a href="#url-parameter"><code>url</code></a> parameter:</p>
+
+[NoInterfaceObject, Exposed=(Window,Worker)]
+partial interface GlobalFetch {
+  void fetchBeacon(USVString url, optional BeaconRequestInit init);
+};
+
+dictionary BeaconRequestInit {
+    ByteString method = "POST";
+    HeadersInit headers;
+    BodyInit? body = null;
+};
+      </pre>
+      <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn> and 
+      <dfn id="dom-navigator-fetchbeacon"><code>fetchBeacon</code></dfn> methods make 
+      a fetch to the url specified by the <a href="#url-parameter"><code>url</code></a> parameter
+      and transmit the <a href="#data-parameter"><code>data</code></a> parameter 
+      for <code>sendBeacon</code> and the <a href="#init-parameter"><code>init</code></a>
+      parameter for <code>fetchBeacon</code>:</p>
       <ul>
         <li>The user agent SHOULD restrict the maximum <code>data</code> size
         to ensure that beacon requests are able to complete quickly and in a
@@ -382,17 +404,17 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
 
       <div class="note">Beacon API does not provide a response callback. The server is encouraged to omit returning a response body for such requests (e.g. respond with <code>204 No Content</code>), and the client can terminate responses that contain a body - e.g. cancel the HTTP/2 stream, or abort the HTTP/1 connection.</div>
 
-      <div class="parameters">
-        <h4 id="parameters">Parameters</h4>
-        <h4 id="url-parameter"><code>url</code></h4>
-        <p>The <code>url</code> parameter indicates the URL where the data is
-        to be transmitted.</p>
-        <h4 id="data-parameter"><code>data</code></h4>
-        <p>The <code>data</code> parameter is the <a>BodyInit</a> data that is
+      <div class="parameters"> 
+        <h4 id="sendBeacon-parameters">sendBeacon Parameters</h4> 
+        <h4 id="url-parameter"><code>url</code></h4> 
+        <p>The <code>url</code> parameter indicates the URL where the data is 
+        to be transmitted.</p> 
+        <h4 id="data-parameter"><code>data</code></h4> 
+        <p>The <code>data</code> parameter is the <a>BodyInit</a> data that is 
         to be transmitted.</p>
       </div>
       <div class="returnvalues">
-        <h4 id="return-values">Return Value</h4>
+        <h4 id="sendBeacon-return-values">sendBeacon Return Value</h4>
         <p>The <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a>
         method returns true if the user agent is able to successfully queue the
         data for transfer. Otherwise it returns false.</p>
@@ -404,11 +426,39 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
         not provide any information whether the data transfer has succeeded or
         not.</p>
       </div>
+      <div class="parameters"> 
+        <h4 id="fetchBeacon-parameters">fetchBeacon Parameters</h4> 
+        <h4 id="url-parameter"><code>url</code></h4> 
+        <p>The <code>url</code> parameter indicates the URL where the data is 
+        to be transmitted.</p> 
+        <h4 id="init-parameter"><code>init</code></h4> 
+        <p>The <code>init</code> parameter contains the method, <a>HeadersInit</a>
+        and <a>BodyInit</a> data to make the beacon request.</p>
+      </div>
+      <div class="returnvalues">
+        <h4 id="fetch-return-values">fetchBeacon Return Value</h4>
+        <p>The <a href="#dom-navigator-fetchbeacon"><code>fetchBeacon</code></a>
+        method returns void.</p>
+        <p class="note">If the user agent limits the amount of data that can be
+        queued to be sent using this API and the size of <var>body</var> causes
+        that limit to be exceeded, <code>fetchBeacon</code> will throw. If
+        fetchBeacon does not throw, this method does not provide any information
+        whether the data transfer has succeeded or not because the actual data
+        transfer happens asynchronously.</p>
+      </div>
     </section>
-    <section id="sec-processing-model">
-      <h2>Processing Model</h2>
+    <section id="sec-processing-model">   
+      <h2>Processing Model for sendBeacon</h2>
       <p>On calling the <a href=
       "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method, the
+      following steps must be run:</p>
+      <ol>
+          <li><p>Begin the fetchBeacon processing model with the parameters url and {body:data}.
+          If an exception is thrown, return false. Otherwise, return true.</p>
+      </ol>
+      <h2>Processing Model for fetchBeacon</h2>
+      <p>On calling the <a href=
+      "#dom-navigator-fetchbeacon"><code>fetchBeacon</code></a> method, the
       following steps must be run:</p>
       <ol>
         <li>
@@ -420,24 +470,37 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
           <a href='#origin'>origin</a>.</p>
         </li>
         <li>
-          <p>Set <var>referrer</var> to the <a>entry settings object</a>'s'
+          <p>Set <var>referrer</var> to the <a>entry settings object</a>'s
           <a>API referrer source</a>'s URL if <a>entry settings object</a>'s
           <a>API referrer source</a> is a <a>document</a>, and <a>entry
           settings object</a>'s <a>API referrer source</a> otherwise</p>
-        </li>
+        </li>        
+        <li>If <code>init</code>'s <code>method</code> member is present, set <var>inputMethod</var> 
+        to <code>init.method</code> and run these substeps:
+        <ol type='i'> 
+          <li>If <var>inputMethod</var> is not a <a href="https://fetch.spec.whatwg.org/#concept-method">
+          method</a> or <var>inputMethod</var> is a 
+          <a href="https://fetch.spec.whatwg.org/#forbidden-method">forbidden method</a>,
+          <a href="#throw-a-name-exception">throw</a> a <code>TypeError</code>.
+          <li><a href="https://fetch.spec.whatwg.org/#concept-method-normalize">Normalize</a> <var>inputMethod</var>. 
+        </ol>        
         <li>
           <p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a>
-          steps with <code>url</code> and <var>base</var>. If the algorithm
+          steps with <var>parsedUrl</var> and <var>base</var>. If the algorithm
           returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
           "http" or "https", <a href="#throw-a-name-exception">throw</a> a
           "<code><a>SyntaxError</a></code>" exception and terminate these
           steps.</p>
         </li>
         <li>
-          <p>If <var>data</var> is not null and if the user agent limits the
-          amount of data that can be queued to be sent using this API and the
-          size of <var>data</var> causes that limit to be exceeded, terminate
-          these steps and set the return value to false.</p>
+          <p>If <a href="#init-parameter"><code>init</code></a>'s body member is present and non-null and
+          inputMethod is `GET` or `HEAD`, <a href="#throw-a-name-exception">throw</a> a TypeError.</p>
+        </li>
+        <li>
+          <p>If <a href="#init-parameter"><code>init</code></a>'s body member is present and non-null 
+          and if the user agent limits the amount of data that can be queued to be sent using this API and the
+          size of <var>body</var> causes that limit to be exceeded, terminate
+          these steps and <a href="#throw-a-name-exception">throw</a> a TypeError.</p>
         </li>
         <li>Otherwise, create the following temporary variables:
           <ul>
@@ -447,9 +510,11 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
               object's byte stream (<var>transmittedData</var>) and MIME type
               (<var>mimeType</var>).
             </li>
-            <li>Let <var>headerList</var> be null.</li>
+            <li>Let <var>headerList</var> be a new <a href="https://fetch.spec.whatwg.org/#headers">Headers</a> object.</li>
           </ul>
         </li>
+        <li>If init.headers is present, <a href="https://fetch.spec.whatwg.org/#concept-headers-fill">fill</a> headers with
+        init.headers. Rethrow any exceptions.
         <li>
           <p>If <var>mimeType</var> is not null, append a
           <code>Content-Type</code> header with value <var>mimeType</var> to
@@ -458,8 +523,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
           <code>Accept</code> header with <code>*/*</code> as the <a>value</a>
           to <var>headerList</var>.</p>
         </li>
-        <li>Set the return value to true and return the
-        <code>sendBeacon()</code> call, but continue to runs the following
+        <li>Return the call, but continue to runs the following
         steps. These steps may be run even after the document has
         unloaded.</li>
         <li>
@@ -469,7 +533,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
             <dt>
               <a>method</a>
             </dt>
-            <dd><code>POST</code></dd>
+            <dd><var>inputMethod</var></dd>
             <dt>
               <a>url</a>
             </dt>
@@ -506,7 +570,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
     </section>
     <section id="privacy" class="informative">
       <h2>Privacy and Security</h2>
-      <p>The <code>sendBeacon</code> interface provides an asynchronous and non-blocking mechanism for delivery of data. This API can be used to:</p>
+      <p>The <code>sendBeacon</code> and <code>fetchBeacon</code> interfaces provides an asynchronous and non-blocking mechanism for delivery of data. This API can be used to:</p>
       <ul>
         <li>Report client-side events to the server. The delivery is prioritized and scheduled by the user agent such that it does not block other interactive work and makes efficient use of system resources.</li>
         <li>Report session data when the page transitions to background state or is being unloaded, without blocking the user agent.</li>
@@ -515,7 +579,8 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
       <p>The delivered data might contain potentially sensitive information, for example, data about a user's activity on a web page, to a server. While this can have privacy implications for the user, existing methods, such as scripted form-submit, image beacons, and XHR/fetch requests provide similar capabilities, but come with various and costly performance tradeoffs: the requests can be aborted by the user agent unless the developer blocks the user agent from processing other events (e.g. by invoking a synchronous request, or spinning in an empty loop), and the user agent is unable to prioritize and coalesce such requests to optimize use of system resources.</p>
       <p>A request initiated by sendBeacon is subject to following properties:</p>
       <ul>
-        <li>If the payload is one of <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, or <code>text/plain</code>, then the request is a simple request that does not require an additional CORS-preflight; same as scripted form-post or XHR/fetch.</li>
+        <li>If the method is a <a href="https://fetch.spec.whatwg.org/#simple-method">simple method</a> ('GET', 'HEAD' or 'POST'), the payload is one of <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, or <code>text/plain</code>, 
+        and the headerlist is entirely <a href="https://fetch.spec.whatwg.org/#simple-header">simple headers</a>, then the request is a simple request that does not require an additional CORS-preflight; same as scripted form-post or XHR/fetch.</li>
         <li>Otherwise, if the payload is a <code>Blob</code> and the resulting <code>Content-Type</code> is not a <a href="https://fetch.spec.whatwg.org/#simple-header">simple header</a>, then a CORS preflight is made and the server needs to first allow such requests by returning the appropriate set of CORS headers (<code>Access-Control-Allow-Credentials</code>, <code>Access-Control-Allow-Origin</code>, <code>Access-Control-Allow-Headers</code>); same as XHR/fetch.</li>
       </ul>
       <p>As such, from the security perspective, the Beacon API is subject to all the same security policies as the current methods in use by developers. Similarly, from the privacy perspective, the resulting requests are initiated immediately when the API is called, or upon a page visibility change, which restricts the exposed information (e.g. user's IP address) to existing lifecycle events accessible to the developers. However, user agents might consider alternative methods to surface such requests to provide transparency to users.</p>
@@ -523,7 +588,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
     </section>
     <section class="appendix">
       <h2>Acknowledgments</h2>
-      <p>Sincere thanks to Jonas Sicking, Nick Doty, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas, and Anne van Kesteren for their helpful comments and contributions to this work.</p>
+      <p>Sincere thanks to Jonas Sicking, Nick Doty, James Simonsen, William Chan, Jason Weber, Philippe Le Hegaret, Daniel Austin, Chase Douglas and Anne van Kesteren for their helpful comments and contributions to this work.</p>
     </section>
   </section>
 </body>
