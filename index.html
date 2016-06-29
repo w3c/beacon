@@ -447,6 +447,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
               object's byte stream (<var>transmittedData</var>) and MIME type
               (<var>mimeType</var>).
             </li>
+            <li>Let <var>corsMode</var> be set to "<code>cors</code>" if object's type is is <code>Blob</code> and "<code>no-cors</code>" otherwise.</li>
             <li>Let <var>headerList</var> be null.</li>
           </ul>
         </li>
@@ -492,7 +493,7 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
             <dt>
               <a>mode</a>
             </dt>
-            <dd><i>CORS</i></dd>
+            <dd><var>corsMode</var></dd>
             <dt>
               <a>credentials mode</a>
             </dt>
