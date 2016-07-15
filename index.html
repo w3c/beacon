@@ -447,17 +447,20 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
               object's byte stream (<var>transmittedData</var>) and MIME type
               (<var>mimeType</var>).
             </li>
-            <li>Let <var>corsMode</var> be set to "<code>cors</code>" if object's type is is <code>Blob</code> and "<code>no-cors</code>" otherwise.</li>
+            <li>Let <var>corsMode</var> be "<code>cors</code>".</li>
             <li>Let <var>headerList</var> be null.</li>
           </ul>
         </li>
-        <li>
-          <p>If <var>mimeType</var> is not null, append a
-          <code>Content-Type</code> header with value <var>mimeType</var> to
-          <var>headerList</var>. Append a <code>Accept-Language</code> header
-          with an appropriate <a>value</a> to <var>headerList</var>. Append a
-          <code>Accept</code> header with <code>*/*</code> as the <a>value</a>
-          to <var>headerList</var>.</p>
+        <li>If <var>mimeType</var> is not null:
+          <ul>
+            <li>If <var>mimeType</var> value is a <a href=
+            "https://fetch.spec.whatwg.org/#cors-safelisted-request-header">CORS-safelisted
+            request-header</a> value for the <code>Content-Type</code> header,
+            set <var>corsMode</var> to "<code>no-cors</code>".
+            </li>
+            <li>Append a <code>Content-Type</code> header with value
+            <var>mimeType</var> to <var>headerList</var>.</li>
+          </ul>
         </li>
         <li>Set the return value to true and return the
         <code>sendBeacon()</code> call, but continue to runs the following
