@@ -262,6 +262,8 @@
             list</a></dfn></li>
             <li>request <dfn id='concept-request-origin'><a href=
             "http://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
+            <li>request <dfn id='concept-keep-alive-flag'><a href=
+            "https://fetch.spec.whatwg.org/#keep-alive-flag">keep-alive flag</a></dfn></li>
             <li><dfn id='concept-omit-origin-header-flag'><a href='https://fetch.spec.whatwg.org/#omit-origin-header-flag'><code>Origin</code> header flag</a></dfn></li>
             <li>request <dfn id='concept-request-referrer'><a href=
             "http://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
@@ -490,6 +492,10 @@ partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
               <a>referrer</a>
             </dt>
             <dd><var>referrer</var></dd>
+            <dt>
+              <a>keep-alive flag</a>
+            </dt>
+            <dd><code>true</code></dd>
             <dt>
               <a>body</a>
             </dt>
