@@ -176,6 +176,7 @@
       background synchronization or transfer capabilities. The user agent is
       allowed to restrict the maximum accepted payload size to ensure that
       beacon requests are able to complete quickly and in a timely manner.</li>
+      <li>The <code>sendBeacon</code> method does not provide ability to customize the request method, provide custom request headers, or change other <a href="#sec-processing-model">processing properties</a> of the request and response. Applications that require non-default settings for such requests should use the [[FETCH]] API with <a href="#concept-keep-alive-flag">keepalive flag</a> set to <code>true</code>.</li>
     </ul>
   </section>
   <section id="conformance-requirements">
@@ -350,11 +351,6 @@
       <pre class="idl">
 partial interface <dfn id="Navigator">Navigator</dfn> {
     boolean <a>sendBeacon</a>(<a>USVString</a> <var title=
-"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
-};
-
-partial interface <dfn id="WorkerNavigator">WorkerNavigator</dfn> {
-    boolean <a>sendBeacon</a>(USVString <var title=
 "url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
 };
 </pre>
