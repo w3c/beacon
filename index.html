@@ -78,7 +78,6 @@
     that such requests are still processed and delivered to destination.</p>
   </section>
   <section id='sotd'>
-    <p>The credential mode is now "include" instead of omit.</p>
   </section>
   <section id="introduction" class='informative'>
     <h2>Introduction</h2>
@@ -370,8 +369,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
         is active, or wait until network interface is active. However, the user
         agent SHOULD NOT delay transmission indefinitely and ensure that
         pending transmissions are periodically flushed even if there is no
-        other network activity.
-          <div class="note">See Fetch API + request coalescing discussion: <a href="https://github.com/whatwg/fetch/issues/184">https://github.com/whatwg/fetch/issues/184</a></div></li>
+        other network activity.</li>
         <li>The user agent MUST schedule immediate transmission of all beacon
         requests when the document <code>visiblityState</code>
         ([[!PAGE-VISIBILITY]]) transitions to <code>hidden</code>, and must
@@ -379,7 +377,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
         time-critical and high-priority work.</li>
       </ul>
 
-      <div class="note">Beacon API does not provide a response callback. The server is encouraged to omit returning a response body for such requests (e.g. respond with <code>204 No Content</code>), and the client can terminate responses that contain a body - e.g. cancel the HTTP/2 stream, or abort the HTTP/1 connection.</div>
+      <div class="note">Beacon API does not provide a response callback. The server is encouraged to omit returning a response body for such requests (e.g. respond with <code>204 No Content</code>).</div>
 
       <div class="parameters">
         <h4 id="parameters">Parameters</h4>
