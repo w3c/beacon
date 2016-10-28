@@ -215,9 +215,6 @@
             <li><dfn id='throw-a-name-exception'><a href=
             "http://www.w3.org/TR/dom/#concept-throw">throw a name
             exception</a></dfn></li>
-            <li>the <dfn id='syntaxerror'><a href=
-            "http://www.w3.org/TR/dom/#syntaxerror"><code>SyntaxError</code></a></dfn>
-            error name</li>
           </ul>
         </dd>
         <dt>HTML5</dt>
@@ -328,6 +325,9 @@
             <li><dfn id='usvstring'><a href=
             "https://heycam.github.io/webidl/#idl-USVString"><code>USVString</code></a></dfn>
             type</li>
+            <li><dfn id='typeerror'><a href=
+            "https://heycam.github.io/webidl/#exceptiondef-typeerror"><code>TypeError</code></a></dfn>
+            type</li>
           </ul>
         </dd>
         <dt>XMLHttpRequest</dt>
@@ -427,7 +427,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
           steps with <code>url</code> and <var>base</var>. If the algorithm
           returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
           "http" or "https", <a href="#throw-a-name-exception">throw</a> a
-          "<code><a>SyntaxError</a></code>" exception and terminate these
+          "<code><a>TypeError</a></code>" exception and terminate these
           steps.</p>
         </li>
         <li>
