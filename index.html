@@ -279,6 +279,9 @@
             mode</a></dfn></li>
             <li><dfn id='fetch'><a href=
             "http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
+            <li><dfn id='http-network-or-cache-fetch'><a href=
+            "https://fetch.spec.whatwg.org/#http-network-or-cache-fetch">http-network-or-cache
+            fetch</a></dfn></li>
             <li><dfn id='bodyinit'><a href=
             "https://fetch.spec.whatwg.org/#bodyinit">BodyInit</a></dfn></li>
           </ul>
@@ -364,9 +367,10 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
       "#data-parameter"><code>data</code></a> parameter to the URL provided by
       the <a href="#url-parameter"><code>url</code></a> parameter:</p>
       <ul>
-        <li>The user agent MUST restrict the maximum <code>data</code> size
-        to ensure that beacon requests are able to complete quickly and in a
-        timely manner.</li>
+        <li>The user agent MUST initiate a fetch with <a href="#concept-keep-alive-flag">
+        keepalive</a> flag set, which restricts the amount of data that can be
+        queued by such requests to ensure that beacon requests are able to
+        complete quickly and in a timely manner.</li>
         <li>The user agent MUST schedule immediate transmission of all beacon
         requests when the document <code>visiblityState</code>
         ([[!PAGE-VISIBILITY]]) transitions to <code>hidden</code>, and must
@@ -403,9 +407,10 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
         can be sent via this API: this helps ensure that such requests are
         delivered successfully and with minimal impact on other user and browser
         activity. If the amount of <var>data</var> to be queued exceeds the
-        user agent limit, this method returns <code>false</code>; a return
-        value of <code>true</code> implies the browser has queued the data for
-        transfer. However, since the actual data transfer happens
+        user agent limit (as defined in <a href="#http-network-or-cache-fetch">
+        http-network-or-cache-fetch</a>), this method returns <code>false</code>;
+        a return value of <code>true</code> implies the browser has queued the
+        data for transfer. However, since the actual data transfer happens
         asynchronously, this method does not provide any information whether
         the data transfer has succeeded or not.</p>
       </div>
@@ -450,8 +455,10 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
             </li>
             <li>If the amount of data that can be queued to be sent by
             <a href="#concept-keep-alive-flag">keepalive</a> enabled requests is
-            exceeded by the size of <var>transmittedData</var>, set the return
-            value to <code>false</code> and terminate these steps.</li>
+            exceeded by the size of <var>transmittedData</var> (as defined in
+            <a href="#http-network-or-cache-fetch">http-network-or-cache-fetch</a>),
+            set the return value to <code>false</code> and terminate these
+            steps.</li>
             <p class="note">Requests initiated via the Beacon API automatically
             set the <var>keepalive</var> flag, and developers can similarly set
             the same flag manually when using the Fetch API. All requests with
