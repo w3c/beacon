@@ -3,7 +3,7 @@
 <head>
   <title>Beacon</title>
   <meta charset='utf-8'>
-  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class=
+  <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class=
   'remove'>
   </script>
   <script class='remove'>
@@ -41,25 +41,9 @@
     license: 'w3c-software-doc',
     wgPublicList: "public-web-perf",
     noLegacyStyle: true,
+    github: "https://github.com/w3c/beacon",
+    testSuiteURI: "https://github.com/w3c/web-platform-tests/tree/master/beacon",
     otherLinks: [{
-      key: 'Repository',
-      data: [{
-        value: 'We are on Github.',
-        href: 'https://github.com/w3c/beacon/'
-      }, {
-        value: 'File a bug.',
-        href: 'https://github.com/w3c/beacon/issues'
-      }, {
-        value: 'Commit history.',
-        href: 'https://github.com/w3c/beacon/commits/gh-pages/index.html'
-      }]
-    },{
-      key: 'Mailing list',
-      data: [{
-        value: 'public-web-perf@w3.org',
-        href: 'https://lists.w3.org/Archives/Public/public-web-perf/'
-      }]
-    },{
       key: 'Implementation',
       data: [{
         value: 'Can I use Beacon?',
@@ -121,7 +105,7 @@
       requests or other techniques that block processing of user interactive
       events.</li>
     </ul>
-    <p>The following example shows use of the <code>sendBeacon</code> method to
+    <p>The following example shows use of the <a>sendBeacon</a> method to
     deliver event, click, and analytics data:</p>
     <pre class='example highlight'>
       &lt;html&gt;
@@ -151,40 +135,40 @@
       &lt;/body&gt;
       &lt;/html&gt;
 </pre>
-    <p class="note">Above example uses <code>visibilitychange</code> event
-    defined in [[PAGE-VISIBILITY]] to trigger delivery of session data. This
+    <p class="note">Above example uses <a><code>visibilitychange</code></a> event
+    defined in [[PAGE-VISIBILITY-2]] to trigger delivery of session data. This
     event is the only event that is guaranteed to fire on mobile devices when
     the page transitions to background state (e.g. when user switches to a
     different application, goes to homescreen, etc), or is being unloaded.
-    Developers should avoid relying on <code>unload</code> event because it
+    Developers should avoid relying on <a><code>unload</code></a> event because it
     will not fire whenever a page in background state (i.e.
-    <code>visiblityState</code> equal to <code>hidden</code>) and the process
+    <a><code>visiblityState</code></a> equal to <a><code>hidden</code></a>) and the process
     is terminated by the mobile OS.</p>
-    <p>The requests initiated via the <code>sendBeacon</code> method do not
+    <p>The requests initiated via the <a>sendBeacon</a> method do not
     block or compete with time-critical work, may be prioritized by the user
     agent to improve network efficiency, and eliminate the need to use blocking
     operations to ensure delivery of beacon data.</p>
-    <p>What <code>sendBeacon</code> does not do and is not intended to
+    <p>What <a>sendBeacon</a> does not do and is not intended to
     solve:</p>
     <ul>
-      <li>The <code>sendBeacon</code> method does not provide special handling
+      <li>The <a>sendBeacon</a> method does not provide special handling
       for offline storage or delivery. A beacon request is like any other
       request and may be combined with [[SERVICE-WORKERS]] to provide offline
       functionality where necessary.</li>
-      <li>The <code>sendBeacon</code> method is not intended to provide
+      <li>The <a>sendBeacon</a> method is not intended to provide
       background synchronization or transfer capabilities. The user agent
       restricts the maximum accepted payload size to ensure that
       beacon requests are able to complete quickly and in a timely manner.</li>
-      <li>The <code>sendBeacon</code> method does not provide ability to
+      <li>The <a>sendBeacon</a> method does not provide ability to
       customize the request method, provide custom request headers, or change
       other <a href="#sec-processing-model">processing properties</a> of the
       request and response. Applications that require non-default settings for
       such requests should use the [[FETCH]] API with
-      <a href="#concept-keep-alive-flag">keepalive flag</a> set to
+      <a>keep-alive flag</a> set to
       <code>true</code>.</li>
     </ul>
   </section>
-  <section id="conformance-requirements">
+  <section>
     <h2>Conformance requirements</h2>
     <p>All diagrams, examples, and notes in this specification are
     non-normative, as are all sections explicitly marked non-normative.
@@ -205,7 +189,7 @@
     implemented in any manner, so long as the end result is equivalent. (In
     particular, the algorithms defined in this specification are intended to be
     easy to follow, and not intended to be performant.)</p>
-    <section id="terminology">
+    <section>
       <h2>Dependencies</h2>
       <dl>
         <dt>DOM</dt>
@@ -213,38 +197,35 @@
           <p>The following terms are defined in the DOM specification:
           [[!DOM]]</p>
           <ul>
-            <li>the <dfn id='document-url'><a href=
-            "http://www.w3.org/TR/dom/#concept-document-url">document
-            URL</a></dfn></li>
-            <li><dfn id='document'><a href=
-            "http://www.w3.org/TR/dom/#concept-document">document</a></dfn></li>
-            <li><dfn id='throw-a-name-exception'><a href=
-            "http://www.w3.org/TR/dom/#concept-throw">throw a name
-            exception</a></dfn></li>
+            <li>the <dfn data-cite="DOM#concept-document-url">document
+            URL</dfn></li>
+            <li><dfn data-cite="DOM#concept-document">document</dfn></li>
           </ul>
         </dd>
-        <dt>HTML5</dt>
+        <dt>HTML52</dt>
+        <dd>
+          <p>The following terms are defined in the HTML 5.2 specification:
+          [[!HTML52]]</p>
+          <ul>
+            <li><dfn id='referrer-source'><a href=
+            "https://www.w3.org/TR/html52/infrastructure.html#referrer-source">referrer source</a></dfn></li>
+          </ul>
+        </dd>
+        <dt>HTML</dt>
         <dd>
           <p>The following terms are defined in the HTML specification:
-          [[!HTML5]]</p>
+          [[!HTML]]</p>
           <ul>
-            <li><dfn id='api-base-url'><a href=
-            "http://www.w3.org/TR/html5/webappapis.html#api-base-url">API base
-            URL</a></dfn></li>
-            <li><dfn id='api-referrer-source'><a href=
-            "http://www.w3.org/TR/html5/webappapis.html#api-referrer-source">API
-            referrer source</a></dfn></li>
-            <li><dfn id='entry-settings-object'><a href=
-            "http://www.w3.org/TR/html5/webappapis.html#entry-settings-object">entry
-            settings object</a></dfn></li>
-            <li><dfn id='multipart-form-data-boundary-string'><a href=
-            "http://www.w3.org/TR/html5/forms.html#multipart/form-data-encoding-algorithm">
-            <code>multipart/form-data</code> boundary string</a></dfn></li>
-            <li><dfn id='multipart-form-data-encoding-algorithm'><a href=
-            "http://www.w3.org/TR/html5/forms.html#multipart/form-data-boundary-string">
-            <code>multipart/form-data</code> encoding algorithm</a></dfn></li>
-            <li><dfn id='origin'>resource <a href=
-            "http://www.w3.org/TR/html5/browsers.html#origin-0">origin</a></dfn></li>
+            <li><dfn data-cite="HTML#api-base-url">API base
+            URL</dfn></li>
+            <li><dfn data-cite="HTML#entry-settings-object">entry
+            settings object</dfn></li>
+            <li><dfn data-cite="HTML#multipart/form-data-encoding-algorithm">
+            <code>multipart/form-data</code> boundary string</dfn></li>
+            <li><dfn data-cite="HTML#multipart/form-data-boundary-string">
+            <code>multipart/form-data</code> encoding algorithm</dfn></li>
+            <li>resource <dfn data-cite="HTML#origin" data-lt="resource origin" data-lt-noDefault id="resource-origin">origin</dfn></li>
+            <li>the <code><dfn data-cite="HTML#navigator">Navigator</dfn></code> object</li>
           </ul>
         </dd>
         <dt>Fetch</dt>
@@ -252,64 +233,27 @@
           <p>The following terms are defined in the HTML specification:
           [[!FETCH]]</p>
           <ul>
-            <li>header <dfn id='concept-header-value'><a href=
-            "http://fetch.spec.whatwg.org/#concept-header-value">value</a></dfn></li>
-            <li><dfn id='concept-request'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request">request</a></dfn></li>
-            <li>request <dfn id='concept-request-method'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-method">method</a></dfn></li>
-            <li>request <dfn id='concept-request-url'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-url">url</a></dfn></li>
-            <li>request <dfn id='concept-request-list'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-header-list">header
-            list</a></dfn></li>
-            <li>request <dfn id='concept-request-origin'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-origin">origin</a></dfn></li>
-            <li>request <dfn id='concept-keep-alive-flag'><a href=
-            "https://fetch.spec.whatwg.org/#keep-alive-flag">keep-alive flag</a></dfn></li>
-            <li><dfn id='concept-omit-origin-header-flag'><a href='https://fetch.spec.whatwg.org/#omit-origin-header-flag'><code>Origin</code> header flag</a></dfn></li>
-            <li>request <dfn id='concept-request-referrer'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-referrer">referrer</a></dfn></li>
-            <li>request <dfn id='concept-request-body'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-body">body</a></dfn></li>
-            <li>request <dfn id='concept-request-mode'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-mode">mode</a></dfn></li>
-            <li>request <dfn id='concept-request-credentials-mode'><a href=
-            "http://fetch.spec.whatwg.org/#concept-request-credentials-mode">credentials
-            mode</a></dfn></li>
-            <li><dfn id='fetch'><a href=
-            "http://fetch.spec.whatwg.org/#concept-fetch">fetch</a></dfn></li>
-            <li><dfn id='http-network-or-cache-fetch'><a href=
-            "https://fetch.spec.whatwg.org/#http-network-or-cache-fetch">http-network-or-cache
-            fetch</a></dfn></li>
-            <li><dfn id='bodyinit'><a href=
-            "https://fetch.spec.whatwg.org/#bodyinit">BodyInit</a></dfn></li>
-          </ul>
-        </dd>
-        <dt>File API</dt>
-        <dd>
-          <p>The following terms are defined in the File API specification:
-          [[!FILEAPI]]</p>
-          <ul>
-            <li><dfn id='blob'><a href=
-            "http://www.w3.org/TR/FileAPI/#blob"><code>Blob</code></a></dfn>
-            interface</li>
-            <li>the <dfn id='type'><a href=
-            "http://www.w3.org/TR/FileAPI/#dfn-type"><code>type</code></a></dfn>
-            attribute</li>
-          </ul>
-        </dd>
-        <dt>Typed Array</dt>
-        <dd>
-          <p>The following terms are defined in the Typed Array specification:
-          [[!TYPEDARRAY]]</p>
-          <ul>
-            <li><dfn id='arraybufferview'><a href=
-            "http://www.khronos.org/registry/typedarray/specs/latest/#ARRAYBUFFERVIEW">
-            <code>ArrayBufferView</code></a></dfn> interface</li>
-            <li><dfn id='arraybuffer'><a href=
-            "http://www.khronos.org/registry/typedarray/specs/latest/#ArrayBuffer">
-            <code>ArrayBuffer</code></a></dfn> interface</li>
+            <li><dfn data-cite="FETCH#concept-header-value">header value</dfn></li>
+            <li><dfn data-cite="FETCH#concept-request">request</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-method">method</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-url" id="request-url" data-lt-noDefault data-lt="request url">url</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-header-list">header
+            list</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-origin" id="request-origin" data-lt-noDefault data-lt="request origin">origin</a></dfn></li>
+            <li>request <dfn data-cite="FETCH#keep-alive-flag">keep-alive flag</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-referrer">referrer</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-body">body</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-mode">mode</dfn></li>
+            <li>request <dfn data-cite="FETCH#concept-request-credentials-mode">credentials
+            mode</dfn></li>
+            <li><dfn data-cite="FETCH#concept-fetch">fetch</dfn></li>
+            <li><dfn data-cite="FETCH#http-network-or-cache-fetch">http-network-or-cache-fetch</dfn></li>
+            <li><dfn data-cite="FETCH#bodyinit">BodyInit</dfn></li>
+            <li><dfn data-cite="FETCH#cors-safelisted-request-header">CORS-safelisted request-header</dfn></li>
+            <li><dfn data-cite="FETCH#concept-bodyinit-extract">Extract</dfn></li>
+            <li>the <dfn data-cite="FETCH#http-access-control-allow-credentials"><code>Access-Control-Allow-Credentials</code></dfn> header</li>
+            <li>the <dfn data-cite="FETCH#http-access-control-allow-origin"><code>Access-Control-Allow-Origin</code></dfn> header</li>
+            <li>the <dfn data-cite="FETCH#http-access-control-allow-headers"><code>Access-Control-Allow-Headers</code></dfn> header</li>
           </ul>
         </dd>
         <dt>URL</dt>
@@ -317,54 +261,49 @@
           <p>The following terms are defined in the URL specification:
           [[!URL]]</p>
           <ul>
-            <li><dfn id='url-parser'><a href=
-            "http://url.spec.whatwg.org/#concept-url-parser">URL
-            parser</a></dfn></li>
-            <li><dfn id='scheme'><a href=
-            "http://url.spec.whatwg.org/#concept-url-scheme">scheme</a></dfn></li>
+            <li><dfn data-cite="URL#concept-url-parser">URL
+            parser</dfn></li>
+            <li><dfn data-cite="URL#concept-url-scheme">scheme</dfn></li>
           </ul>
         </dd>
         <dt>Web IDL</dt>
         <dd>
           <p>The IDL fragments in this specification must be interpreted as
           required for conforming IDL fragments, as described in the Web IDL
-          specification [[!WebIDL]].</p>
+          specification [[!WEBIDL]].</p>
           <p>The following terms are defined in the Web IDL specification:</p>
           <ul>
-            <li><dfn id='usvstring'><a href=
-            "https://heycam.github.io/webidl/#idl-USVString"><code>USVString</code></a></dfn>
+            <li><dfn data-cite="WEBIDL#dfn-throw">throw</dfn></li>
+            <li><dfn data-cite="WEBIDL#idl-USVString"><code>USVString</code></dfn>
             type</li>
-            <li><dfn id='typeerror'><a href=
-            "https://heycam.github.io/webidl/#exceptiondef-typeerror"><code>TypeError</code></a></dfn>
+            <li><dfn data-cite="WEBIDL#exceptiondef-typeerror"><code>TypeError</code></dfn>
             type</li>
           </ul>
         </dd>
-        <dt>XMLHttpRequest</dt>
+        <dt>Page Visibility</dt>
         <dd>
-          <p>The following term is defined in the XMLHttpRequest specification:
-          [[!XMLHttpRequest]]</p>
+          <p>The following term is defined in the Page Visibility specification:
+          [[!PAGE-VISIBILITY-2]]</p>
           <ul>
-            <li><dfn id='formdata'><a href=
-            "http://www.w3.org/TR/XMLHttpRequest/#formdata"><code>FormData</code></a></dfn>
-            interface</li>
+            <li><dfn data-cite="PAGE-VISIBILITY-2#dfn-visibilitychange"><code>visibilitychange</code></dfn></li>
+            <li><dfn data-cite="PAGE-VISIBILITY-2#dfn-unload"><code>unload</code></dfn></li>
+            <li><dfn data-cite="PAGE-VISIBILITY-2#dom-visibilitystate-hidden"><code>hidden</code></dfn></li>
+            <li><dfn data-cite="PAGE-VISIBILITY-2#dom-visibilitystate"><code>visiblityState</code></dfn></li>
           </ul>
         </dd>
       </dl>
     </section>
   </section>
-  <section id="sec-beacon">
+  <section>
     <h2>Beacon</h2>
-    <section id="sec-sendBeacon-method">
-      <h2><code>sendBeacon</code> Method</h2>
+    <section data-dfn-for="sendBeacon" data-dfn-for="sendBeacon">
+      <h3><dfn><code>sendBeacon</code></dfn> Method</h3>
       <pre class="idl">
-partial interface <dfn id="Navigator">Navigator</dfn> {
-    boolean <a>sendBeacon</a>(<a>USVString</a> <var title=
-"url">url</var>, optional <a>BodyInit</a>? <var>data</var> = null);
+partial interface Navigator {
+    boolean sendBeacon(USVString url, optional BodyInit? data = null);
 };
 </pre>
-      <p>The <dfn id="dom-navigator-sendbeacon"><code>sendBeacon</code></dfn>
-      method transmits data provided by the <a href=
-      "#data-parameter"><code>data</code></a> parameter to the URL provided by
+      <p>The <a>sendBeacon</a> method transmits data provided by the <a><code>data</code></a> parameter to the URL provided by
       the <a href="#url-parameter"><code>url</code></a> parameter:</p>
       <ul>
         <li>The user agent MUST initiate a fetch with <a href="#concept-keep-alive-flag">
@@ -372,8 +311,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
         queued by such requests to ensure that beacon requests are able to
         complete quickly and in a timely manner.</li>
         <li>The user agent MUST schedule immediate transmission of all beacon
-        requests when the document <code>visiblityState</code>
-        ([[!PAGE-VISIBILITY]]) transitions to <code>hidden</code>, and must
+        requests when the document <a><code>visiblityState</code></a> transitions to <a><code>hidden</code></a>, and must
         allow all such requests to run to completion without blocking other
         time-critical and high-priority work.</li>
         <li>The user agent SHOULD schedule transmission of provided data to
@@ -389,25 +327,25 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
       <div class="note">Beacon API does not provide a response callback. The
       server is encouraged to omit returning a response body for such requests
       (e.g. respond with <code>204 No Content</code>).</div>
-      <div class="parameters">
-        <h4 id="parameters">Parameters</h4>
-        <h4 id="url-parameter"><code>url</code></h4>
-        <p>The <code>url</code> parameter indicates the URL where the data is
+      <div>
+        <h4>Parameters</h4>
+        <h4><dfn id="url-parameter" data-lt-noDefault data-lt="url parameter"><code>url</code></dfn></h4>
+        <p>The <a href="#url-parameter"><code>url</code></a> parameter indicates the URL where the data is
         to be transmitted.</p>
-        <h4 id="data-parameter"><code>data</code></h4>
-        <p>The <code>data</code> parameter is the <a>BodyInit</a> data that is
+        <h4><dfn><code>data</code></dfn></h4>
+        <p>The <a><code>data</code></a> parameter is the <a>BodyInit</a> data that is
         to be transmitted.</p>
       </div>
-      <div class="returnvalues">
-        <h4 id="return-values">Return Value</h4>
-        <p>The <a href="#dom-navigator-sendbeacon"><code>sendBeacon</code></a>
+      <div>
+        <h4>Return Value</h4>
+        <p>The <a>sendBeacon</a>
         method returns true if the user agent is able to successfully queue the
         data for transfer. Otherwise it returns false.</p>
         <p class="note">The user agent imposes limits on the amount of data that
         can be sent via this API: this helps ensure that such requests are
         delivered successfully and with minimal impact on other user and browser
         activity. If the amount of <var>data</var> to be queued exceeds the
-        user agent limit (as defined in <a href="#http-network-or-cache-fetch">
+        user agent limit (as defined in <a>
         http-network-or-cache-fetch</a>), this method returns <code>false</code>;
         a return value of <code>true</code> implies the browser has queued the
         data for transfer. However, since the actual data transfer happens
@@ -417,30 +355,28 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
     </section>
     <section id="sec-processing-model">
       <h2>Processing Model</h2>
-      <p>On calling the <a href=
-      "#dom-navigator-sendbeacon"><code>sendBeacon</code></a> method with
+      <p>On calling the <a>sendBeacon</a> method with
       <var>url</var> and optional <var>data</var>, the following steps must be
       run:</p>
       <ol>
         <li>
-          <p>Set <var>base</var> to the <a>entry settings object</a>'s <a>API
-          base URL</a>.</p>
+          <p>Set <var>base</var> to the <a>entry settings object</a>'s <a>API base URL</a>.</p>
         </li>
         <li>
           <p>Set <var>origin</var> to the <a>entry settings object</a>'s
-          <a href='#origin'>origin</a>.</p>
+          <a href="#resource-origin">origin</a>.</p>
         </li>
         <li>
           <p>Set <var>referrer</var> to the <a>entry settings object</a>'s'
-          <a>API referrer source</a>'s URL if <a>entry settings object</a>'s
-          <a>API referrer source</a> is a <a>document</a>, and <a>entry
-          settings object</a>'s <a>API referrer source</a> otherwise</p>
+          <a>referrer source</a>'s URL if <a>entry settings object</a>'s
+          <a>referrer source</a> is a <a>document</a>, and <a>entry
+          settings object</a>'s <a>referrer source</a> otherwise</p>
         </li>
         <li>
           <p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a>
           steps with <var>url</var> and <var>base</var>. If the algorithm
           returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
-          "http" or "https", <a href="#throw-a-name-exception">throw</a> a
+          "http" or "https", <a>throw</a> a
           "<code><a>TypeError</a></code>" exception and terminate these
           steps.</p>
         </li>
@@ -448,15 +384,14 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
           <p>If <var>data</var> is not <code>null</code>:</p>
           <ul>
             <li>
-              <a href=
-              "https://fetch.spec.whatwg.org/#concept-bodyinit-extract">Extract</a>
+              <a>Extract</a>
               object's byte stream (<var>transmittedData</var>) and MIME type
               (<var>mimeType</var>).
             </li>
             <li>If the amount of data that can be queued to be sent by
             <a href="#concept-keep-alive-flag">keepalive</a> enabled requests is
             exceeded by the size of <var>transmittedData</var> (as defined in
-            <a href="#http-network-or-cache-fetch">http-network-or-cache-fetch</a>),
+            <a>http-network-or-cache-fetch</a>),
             set the return value to <code>false</code> and terminate these
             steps.</li>
             <p class="note">Requests initiated via the Beacon API automatically
@@ -470,8 +405,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
         </li>
         <li>If <var>mimeType</var> is not null:
           <ul>
-            <li>If <var>mimeType</var> value is a <a href=
-            "https://fetch.spec.whatwg.org/#cors-safelisted-request-header">CORS-safelisted
+            <li>If <var>mimeType</var> value is a <a>CORS-safelisted
             request-header</a> value for the <code>Content-Type</code> header,
             set <var>corsMode</var> to "<code>no-cors</code>".
             </li>
@@ -480,7 +414,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
           </ul>
         </li>
         <li>Set the return value to <code>true</code>, return the
-        <code>sendBeacon</code> call, and continue to run the following steps
+        <a>sendBeacon</a> call, and continue to run the following steps
         in parallel:</li>
         <ol>
           <li>
@@ -492,7 +426,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
               </dt>
               <dd><code>POST</code></dd>
               <dt>
-                <a>url</a>
+                <a href="#request-url">url</a>
               </dt>
               <dd><var>parsedUrl</var></dd>
               <dt>
@@ -500,7 +434,7 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
               </dt>
               <dd><var>headerList</var></dd>
               <dt>
-                <a>origin</a>
+                <a href="#request-origin">origin</a>
               </dt>
               <dt>
                 <a>referrer</a>
@@ -531,22 +465,22 @@ partial interface <dfn id="Navigator">Navigator</dfn> {
       </ol>
     </section>
   </section>
-  <section id="privacy" class="informative">
+  <section>
     <h2>Privacy and Security</h2>
-    <p>The <code>sendBeacon</code> interface provides an asynchronous and non-blocking mechanism for delivery of data. This API can be used to:</p>
+    <p>The <a>sendBeacon</a> interface provides an asynchronous and non-blocking mechanism for delivery of data. This API can be used to:</p>
     <ul>
       <li>Report client-side events to the server. The delivery is prioritized and scheduled by the user agent such that it does not block other interactive work and makes efficient use of system resources.</li>
       <li>Report session data when the page transitions to background state or is being unloaded, without blocking the user agent.</li>
       <li>Other use cases that require delivery of small payloads and do not expect a response callback.</li>
     </ul>
     <p>The delivered data might contain potentially sensitive information, for example, data about a user's activity on a web page, to a server. While this can have privacy implications for the user, existing methods, such as scripted form-submit, image beacons, and XHR/fetch requests provide similar capabilities, but come with various and costly performance tradeoffs: the requests can be aborted by the user agent unless the developer blocks the user agent from processing other events (e.g. by invoking a synchronous request, or spinning in an empty loop), and the user agent is unable to prioritize and coalesce such requests to optimize use of system resources.</p>
-    <p>A request initiated by sendBeacon is subject to following properties:</p>
+    <p>A request initiated by <a>sendBeacon</a> is subject to following properties:</p>
     <ul>
-      <li>If the request does not contain a payload, or the request <code>Content-Type</code> is a <a href="https://fetch.spec.whatwg.org/#cors-safelisted-request-header">CORS-safelisted request-header</a>, then the request mode is `no-cors`—similar to an image beacon or form-post respectively.</li>
-      <li>Otherwise, a CORS preflight is made and the server needs to first allow such requests by returning the appropriate set of CORS headers: <code>Access-Control-Allow-Credentials</code>, <code>Access-Control-Allow-Origin</code>, <code>Access-Control-Allow-Headers</code>.</li>
+      <li>If the request does not contain a payload, or the request <code>Content-Type</code> is a <a>CORS-safelisted request-header</a>, then the request mode is `no-cors`—similar to an image beacon or form-post respectively.</li>
+      <li>Otherwise, a CORS preflight is made and the server needs to first allow such requests by returning the appropriate set of CORS headers: <a><code>Access-Control-Allow-Credentials</code></a>, <a><code>Access-Control-Allow-Origin</code></a>, <a><code>Access-Control-Allow-Headers</code></a>.</li>
     </ul>
     <p>As such, from the security perspective, the Beacon API is subject to same security policies as the current methods in use by developers. Similarly, from the privacy perspective, the resulting requests are initiated immediately when the API is called, or upon a page visibility change, which restricts the exposed information (e.g. user's IP address) to existing lifecycle events accessible to the developers. However, user agents might consider alternative methods to surface such requests to provide transparency to users.</p>
-    <p>Compared to the alternatives, the sendBeacon does apply two restrictions: there is no callback method, and the payload size can be restricted by the user agent. Otherwise, the sendBeacon API is not subject to any additional restrictions. The user agent ought not skip or throttle processing of sendBeacon calls, as they can contain critical application state, events, and analytics data. Similarly, the user agent ought not disable sendBeacon when in "private browsing" or equivalent mode, both to avoid breaking the application and to avoid leaking that the user is in such mode.</p>
+    <p>Compared to the alternatives, the <a>sendBeacon</a> does apply two restrictions: there is no callback method, and the payload size can be restricted by the user agent. Otherwise, the <a>sendBeacon</a> API is not subject to any additional restrictions. The user agent ought not skip or throttle processing of <a>sendBeacon</a> calls, as they can contain critical application state, events, and analytics data. Similarly, the user agent ought not disable <a>sendBeacon</a> when in "private browsing" or equivalent mode, both to avoid breaking the application and to avoid leaking that the user is in such mode.</p>
   </section>
   <section class="appendix">
     <h2>Acknowledgments</h2>
