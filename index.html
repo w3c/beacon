@@ -42,7 +42,7 @@
     wgPublicList: "public-web-perf",
     noLegacyStyle: true,
     github: "https://github.com/w3c/beacon",
-    testSuiteURI: "https://github.com/w3c/web-platform-tests/tree/master/beacon",
+    testSuiteURI: "https://w3c-test.org/beacon/",
     otherLinks: [{
       key: 'Implementation',
       data: [{
@@ -296,8 +296,8 @@
   </section>
   <section>
     <h2>Beacon</h2>
-    <section data-dfn-for="sendBeacon" data-dfn-for="sendBeacon">
-      <h3><dfn><code>sendBeacon</code></dfn> Method</h3>
+    <section data-dfn-for="Navigator" data-dfn-for="Navigator">
+      <h3><code><dfn>sendBeacon</dfn></code> Method</h3>
       <pre class="idl">
 partial interface Navigator {
     boolean sendBeacon(USVString url, optional BodyInit? data = null);
