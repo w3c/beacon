@@ -54,7 +54,7 @@
   };
   </script>
 </head>
-<body>
+<body data-link-for="Navigator">
   <section id="abstract">
     <p>This specification defines an interface that web developers can use to
     schedule asynchronous and non-blocking delivery of data that minimizes
@@ -105,7 +105,7 @@
       requests or other techniques that block processing of user interactive
       events.</li>
     </ul>
-    <p>The following example shows use of the <a>sendBeacon</a> method to
+    <p>The following example shows use of the <a>sendBeacon()</a> method to
     deliver event, click, and analytics data:</p>
     <pre class='example highlight'>
       &lt;html&gt;
@@ -144,22 +144,22 @@
     will not fire whenever a page in background state (i.e.
     <a><code>visiblityState</code></a> equal to <a><code>hidden</code></a>) and the process
     is terminated by the mobile OS.</p>
-    <p>The requests initiated via the <a>sendBeacon</a> method do not
+    <p>The requests initiated via the <a>sendBeacon()</a> method do not
     block or compete with time-critical work, may be prioritized by the user
     agent to improve network efficiency, and eliminate the need to use blocking
     operations to ensure delivery of beacon data.</p>
-    <p>What <a>sendBeacon</a> does not do and is not intended to
+    <p>What <a>sendBeacon()</a> does not do and is not intended to
     solve:</p>
     <ul>
-      <li>The <a>sendBeacon</a> method does not provide special handling
+      <li>The <a>sendBeacon()</a> method does not provide special handling
       for offline storage or delivery. A beacon request is like any other
       request and may be combined with [[SERVICE-WORKERS]] to provide offline
       functionality where necessary.</li>
-      <li>The <a>sendBeacon</a> method is not intended to provide
+      <li>The <a>sendBeacon()</a> method is not intended to provide
       background synchronization or transfer capabilities. The user agent
       restricts the maximum accepted payload size to ensure that
       beacon requests are able to complete quickly and in a timely manner.</li>
-      <li>The <a>sendBeacon</a> method does not provide ability to
+      <li>The <a>sendBeacon()</a> method does not provide ability to
       customize the request method, provide custom request headers, or change
       other <a href="#sec-processing-model">processing properties</a> of the
       request and response. Applications that require non-default settings for
@@ -297,13 +297,13 @@
   <section>
     <h2>Beacon</h2>
     <section data-dfn-for="Navigator" data-dfn-for="Navigator">
-      <h3><code><dfn>sendBeacon</dfn></code> Method</h3>
+      <h3><code><dfn>sendBeacon()</dfn></code> Method</h3>
       <pre class="idl">
-partial interface Navigator {
-    boolean sendBeacon(USVString url, optional BodyInit? data = null);
-};
-</pre>
-      <p>The <a>sendBeacon</a> method transmits data provided by the <a><code>data</code></a> parameter to the URL provided by
+  partial interface Navigator {
+      boolean sendBeacon(USVString url, optional BodyInit? data = null);
+  };
+      </pre>
+      <p>The <a>sendBeacon()</a> method transmits data provided by the <a><code>data</code></a> parameter to the URL provided by
       the <a href="#url-parameter"><code>url</code></a> parameter:</p>
       <ul>
         <li>The user agent MUST initiate a fetch with <a href="#concept-keep-alive-flag">
@@ -338,7 +338,7 @@ partial interface Navigator {
       </div>
       <div>
         <h4>Return Value</h4>
-        <p>The <a>sendBeacon</a>
+        <p>The <a>sendBeacon()</a>
         method returns true if the user agent is able to successfully queue the
         data for transfer. Otherwise it returns false.</p>
         <p class="note">The user agent imposes limits on the amount of data that
@@ -355,7 +355,7 @@ partial interface Navigator {
     </section>
     <section id="sec-processing-model">
       <h2>Processing Model</h2>
-      <p>On calling the <a>sendBeacon</a> method with
+      <p>On calling the <a>sendBeacon()</a> method with
       <var>url</var> and optional <var>data</var>, the following steps must be
       run:</p>
       <ol>
@@ -414,7 +414,7 @@ partial interface Navigator {
           </ul>
         </li>
         <li>Set the return value to <code>true</code>, return the
-        <a>sendBeacon</a> call, and continue to run the following steps
+        <a>sendBeacon()</a> call, and continue to run the following steps
         in parallel:</li>
         <ol>
           <li>
@@ -467,20 +467,20 @@ partial interface Navigator {
   </section>
   <section>
     <h2>Privacy and Security</h2>
-    <p>The <a>sendBeacon</a> interface provides an asynchronous and non-blocking mechanism for delivery of data. This API can be used to:</p>
+    <p>The <a>sendBeacon()</a> interface provides an asynchronous and non-blocking mechanism for delivery of data. This API can be used to:</p>
     <ul>
       <li>Report client-side events to the server. The delivery is prioritized and scheduled by the user agent such that it does not block other interactive work and makes efficient use of system resources.</li>
       <li>Report session data when the page transitions to background state or is being unloaded, without blocking the user agent.</li>
       <li>Other use cases that require delivery of small payloads and do not expect a response callback.</li>
     </ul>
     <p>The delivered data might contain potentially sensitive information, for example, data about a user's activity on a web page, to a server. While this can have privacy implications for the user, existing methods, such as scripted form-submit, image beacons, and XHR/fetch requests provide similar capabilities, but come with various and costly performance tradeoffs: the requests can be aborted by the user agent unless the developer blocks the user agent from processing other events (e.g. by invoking a synchronous request, or spinning in an empty loop), and the user agent is unable to prioritize and coalesce such requests to optimize use of system resources.</p>
-    <p>A request initiated by <a>sendBeacon</a> is subject to following properties:</p>
+    <p>A request initiated by <a>sendBeacon()</a> is subject to following properties:</p>
     <ul>
       <li>If the request does not contain a payload, or the request <code>Content-Type</code> is a <a>CORS-safelisted request-header</a>, then the request mode is `no-cors`—similar to an image beacon or form-post respectively.</li>
       <li>Otherwise, a CORS preflight is made and the server needs to first allow such requests by returning the appropriate set of CORS headers: <a><code>Access-Control-Allow-Credentials</code></a>, <a><code>Access-Control-Allow-Origin</code></a>, <a><code>Access-Control-Allow-Headers</code></a>.</li>
     </ul>
     <p>As such, from the security perspective, the Beacon API is subject to same security policies as the current methods in use by developers. Similarly, from the privacy perspective, the resulting requests are initiated immediately when the API is called, or upon a page visibility change, which restricts the exposed information (e.g. user's IP address) to existing lifecycle events accessible to the developers. However, user agents might consider alternative methods to surface such requests to provide transparency to users.</p>
-    <p>Compared to the alternatives, the <a>sendBeacon</a> does apply two restrictions: there is no callback method, and the payload size can be restricted by the user agent. Otherwise, the <a>sendBeacon</a> API is not subject to any additional restrictions. The user agent ought not skip or throttle processing of <a>sendBeacon</a> calls, as they can contain critical application state, events, and analytics data. Similarly, the user agent ought not disable <a>sendBeacon</a> when in "private browsing" or equivalent mode, both to avoid breaking the application and to avoid leaking that the user is in such mode.</p>
+    <p>Compared to the alternatives, the <a>sendBeacon()</a> does apply two restrictions: there is no callback method, and the payload size can be restricted by the user agent. Otherwise, the <a>sendBeacon()</a> API is not subject to any additional restrictions. The user agent ought not skip or throttle processing of <a>sendBeacon()</a> calls, as they can contain critical application state, events, and analytics data. Similarly, the user agent ought not disable <a>sendBeacon()</a> when in "private browsing" or equivalent mode, both to avoid breaking the application and to avoid leaking that the user is in such mode.</p>
   </section>
   <section class="appendix">
     <h2>Acknowledgments</h2>
