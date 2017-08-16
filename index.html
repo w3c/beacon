@@ -201,16 +201,6 @@
             <li><dfn data-cite="DOM#concept-document">document</dfn></li>
           </ul>
         </dd>
-        <dt>HTML52</dt>
-        <dd>
-          <p>The following terms are defined in the HTML 5.2 specification:
-          [[!HTML52]]</p>
-          <ul>
-            <li><dfn id='referrer-source'><a href=
-            "https://www.w3.org/TR/html52/infrastructure.html#referrer-source">referrer
-            source</a></dfn></li>
-          </ul>
-        </dd>
         <dt>HTML</dt>
         <dd>
           <p>The following terms are defined in the HTML specification:
@@ -251,8 +241,6 @@
             "request origin">origin</dfn></li>
             <li>request <dfn data-cite="FETCH#keep-alive-flag">keep-alive
             flag</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-referrer">referrer</dfn></li>
             <li>request <dfn data-cite=
             "FETCH#concept-request-body">body</dfn></li>
             <li>request <dfn data-cite=
@@ -402,12 +390,6 @@
           <a href="#resource-origin">origin</a>.</p>
         </li>
         <li>
-          <p>Set <var>referrer</var> to the <a>entry settings object</a>'s'
-          <a>referrer source</a>'s URL if <a>entry settings object</a>'s
-          <a>referrer source</a> is a <a>document</a>, and <a>entry settings
-          object</a>'s <a>referrer source</a> otherwise</p>
-        </li>
-        <li>
           <p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a>
           steps with <var>url</var> and <var>base</var>. If the algorithm
           returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
@@ -470,10 +452,6 @@
               <dt>
                 <a href="#request-origin">origin</a>
               </dt>
-              <dt>
-                <a>referrer</a>
-              </dt>
-              <dd><var>referrer</var></dd>
               <dt>
                 <a>keep-alive flag</a>
               </dt>
