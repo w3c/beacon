@@ -396,12 +396,14 @@
           "http" or "https", <a>throw</a> a "<code><a>TypeError</a></code>"
           exception and terminate these steps.</p>
         </li>
+        <li>Let <var>headerList</var> be an empty list.</li>
+        <li>Let <var>corsMode</var> be "<code>no-cors</code>".</li>
         <li>
           <p>If <var>data</var> is not <code>null</code>:</p>
-          <ul>
+          <ol>
             <li>
               <a>Extract</a> object's byte stream (<var>transmittedData</var>)
-              and MIME type (<var>mimeType</var>).
+              and content type (<var>contentType</var>).
             </li>
             <li>If the amount of data that can be queued to be sent by
               <a href="#concept-keep-alive-flag">keepalive</a> enabled requests
@@ -414,19 +416,18 @@
             the same flag manually when using the Fetch API. All requests with
             this flag set share the same in-flight quota restrictions that is
             enforced within the Fetch API.</p>
-            <li>Let <var>corsMode</var> be "<code>cors</code>".</li>
-            <li>Let <var>headerList</var> be <code>null</code>.</li>
-          </ul>
-        </li>
-        <li>If <var>mimeType</var> is not null:
-          <ul>
-            <li>If <var>mimeType</var> value is a <a>CORS-safelisted
-            request-header</a> value for the <code>Content-Type</code> header,
-            set <var>corsMode</var> to "<code>no-cors</code>".
+            <li>If <var>contentType</var> is not null:
+              <ul>
+                <li>Set <var>corsMode</var> to "<code>cors</code>".</li>
+                <li>If <var>contentType</var> value is a <a>CORS-safelisted
+                request-header</a> value for the <code>Content-Type</code>
+                header, set <var>corsMode</var> to "<code>no-cors</code>".
+                </li>
+                <li>Append a <code>Content-Type</code> header with value
+                <var>contentType</var> to <var>headerList</var>.</li>
+              </ul>
             </li>
-            <li>Append a <code>Content-Type</code> header with value
-            <var>mimeType</var> to <var>headerList</var>.</li>
-          </ul>
+          </ol>
         </li>
         <li>Set the return value to <code>true</code>, return the
         <a>sendBeacon()</a> call, and continue to run the following steps in
