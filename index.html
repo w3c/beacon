@@ -139,7 +139,7 @@
     when the page transitions to background state (e.g. when user switches to a
     different application, goes to homescreen, etc), or is being unloaded.
     Developers should avoid relying on <a><code>unload</code></a> event because
-    it will not fire whenever a page in background state (i.e.
+    it will not fire whenever a page is in a background state (i.e.
     <a><code>visiblityState</code></a> equal to <a><code>hidden</code></a>) and
     the process is terminated by the mobile OS.</p>
     <p>The requests initiated via the <a>sendBeacon()</a> method do not block
