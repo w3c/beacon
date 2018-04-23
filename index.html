@@ -120,7 +120,7 @@
         // emit non-blocking beacon with session analytics as the page
         // transitions to background state (Page Visibility API)
         document.addEventListener('visibilitychange', function() {
-          if (document.visiblityState === 'hidden') {
+          if (document.visibilityState === 'hidden') {
             var sessionData = buildSessionReport();
             navigator.sendBeacon('/collector', sessionData);
           }
