@@ -140,7 +140,7 @@
     different application, goes to homescreen, etc), or is being unloaded.
     Developers should avoid relying on <a><code>unload</code></a> event because
     it will not fire whenever a page is in a background state (i.e.
-    <a><code>visiblityState</code></a> equal to <a><code>hidden</code></a>) and
+    <a><code>visibilityState</code></a> equal to <a><code>hidden</code></a>) and
     the process is terminated by the mobile OS.</p>
     <p>The requests initiated via the <a>sendBeacon()</a> method do not block
     or compete with time-critical work, may be prioritized by the user agent to
@@ -304,7 +304,7 @@
             <li><dfn data-cite=
             "PAGE-VISIBILITY-2#dom-visibilitystate-hidden"><code>hidden</code></dfn></li>
             <li><dfn data-cite=
-            "PAGE-VISIBILITY-2#dom-visibilitystate"><code>visiblityState</code></dfn></li>
+            "PAGE-VISIBILITY-2#dom-visibilitystate"><code>visibilityState</code></dfn></li>
           </ul>
         </dd>
       </dl>
@@ -329,7 +329,7 @@
         beacon requests are able to complete quickly and in a timely manner.
         </li>
         <li>The user agent MUST schedule immediate transmission of all beacon
-        requests when the document <a><code>visiblityState</code></a>
+        requests when the document <a><code>visibilityState</code></a>
         transitions to <a><code>hidden</code></a>, and must allow all such
         requests to run to completion without blocking other time-critical and
         high-priority work.
