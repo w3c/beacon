@@ -410,12 +410,12 @@
               is exceeded by the size of <var>transmittedData</var> (as defined
               in <a>http-network-or-cache-fetch</a>), set the return value to
               <code>false</code> and terminate these steps.
+              <p class="note">Requests initiated via the Beacon API automatically
+              set the <var>keepalive</var> flag, and developers can similarly set
+              the same flag manually when using the Fetch API. All requests with
+              this flag set share the same in-flight quota restrictions that is
+              enforced within the Fetch API.</p>
             </li>
-            <p class="note">Requests initiated via the Beacon API automatically
-            set the <var>keepalive</var> flag, and developers can similarly set
-            the same flag manually when using the Fetch API. All requests with
-            this flag set share the same in-flight quota restrictions that is
-            enforced within the Fetch API.</p>
             <li>If <var>contentType</var> is not null:
               <ul>
                 <li>Set <var>corsMode</var> to "<code>cors</code>".</li>
@@ -432,7 +432,6 @@
         <li>Set the return value to <code>true</code>, return the
         <a>sendBeacon()</a> call, and continue to run the following steps in
         parallel:
-        </li>
         <ol>
           <li>
             <p>Let <var>req</var> be a new <a>request</a>, initialized as
@@ -476,7 +475,8 @@
             <a>Fetch</a> <var>req</var>.
           </li>
         </ol>
-      </ol>
+      </li>
+    </ol>
     </section>
   </section>
   <section>
