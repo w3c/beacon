@@ -394,9 +394,9 @@
         <li>
           <p>If <var>data</var> is not <code>null</code>:</p>
           <ol>
-            <li>
-              <a>Extract</a> object's byte stream (<var>transmittedData</var>)
-              and content type (<var>contentType</var>).
+            <li>Set <var>transmittedData</var> and <var>contentType</var> to the
+              result of <a data-lt="extract">extracting</a> <var>data</var>'s
+              byte stream with the <var>keepalive flag</var> set.
             </li>
             <li>If the amount of data that can be queued to be sent by
               <a href="#concept-keep-alive-flag">keepalive</a> enabled requests
