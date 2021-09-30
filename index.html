@@ -435,6 +435,10 @@
               </dt>
               <dd><code>POST</code></dd>
               <dt>
+                <a>client
+              </dt>
+              <dd>The <a>entry settings object</a>
+              <dt>
                 <a href="#request-url">url</a>
               </dt>
               <dd><var>parsedUrl</var></dd>
@@ -465,7 +469,13 @@
             </dl>
           </li>
           <li>
-            <a>Fetch</a> <var>req</var>.
+            Let <var>handleBeaconDone</var> given [=fetch/response=] <var>res</var> be to
+            [=finalize and report timing=] with <var>res</var>, the
+            <var>entry settings object</var>, and <code>"beacon"</code>.
+          </li>
+          <li>
+            <a>Fetch</a> <var>req</var>, with [=fetch/processresponsedone=] set to
+            <var>handleBeaconDone</var>.
           </li>
         </ol>
       </li>
