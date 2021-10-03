@@ -224,6 +224,8 @@
             <li><dfn data-cite="FETCH#concept-request">request</dfn></li>
             <li>request <dfn data-cite=
             "FETCH#concept-request-method">method</dfn></li>
+            <li>request <dfn data-cite=
+            "FETCH#concept-request-method">client</dfn></li>
             <li>request <dfn data-cite="FETCH#concept-request-url" id=
             "request-url" data-lt-nodefault="" data-lt=
             "request url">url</dfn></li>
@@ -241,7 +243,10 @@
             <li>request <dfn data-cite=
             "FETCH#concept-request-credentials-mode">credentials
             mode</dfn></li>
+            <li><dfn data-cite="FETCH#concept-response">response</dfn></li>
             <li><dfn data-cite="FETCH#concept-fetch">fetch</dfn></li>
+            <li><dfn data-cite="FETCH#fetch-processresponsedone">processResponseDone</dfn></li>
+            <li><dfn data-cite="FETCH#finalize-and-report-timing">finalize and report timing</dfn></li>
             <li><dfn data-cite=
             "FETCH#http-network-or-cache-fetch">http-network-or-cache-fetch</dfn></li>
             <li><dfn data-cite="FETCH#bodyinit">BodyInit</dfn></li>
@@ -435,6 +440,10 @@
               </dt>
               <dd><code>POST</code></dd>
               <dt>
+                <a>client</a>
+              </dt>
+              <dd>The <a>entry settings object</a>
+              <dt>
                 <a href="#request-url">url</a>
               </dt>
               <dd><var>parsedUrl</var></dd>
@@ -465,7 +474,13 @@
             </dl>
           </li>
           <li>
-            <a>Fetch</a> <var>req</var>.
+            Let <var>handleBeaconDone</var> given <a>response</a> <var>res</var> be a call to
+            [=finalize and report timing=] with <var>res</var>, the
+            <var>entry settings object</var>, and <code>"beacon"</code>.
+          </li>
+          <li>
+            <a>Fetch</a> <var>req</var>, with <a>processResponseDone</a> set to
+            <var>handleBeaconDone</var>.
           </li>
         </ol>
       </li>
