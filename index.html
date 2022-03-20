@@ -216,7 +216,7 @@
         </dd>
         <dt>Fetch</dt>
         <dd>
-          <p>The following terms are defined in the HTML specification:
+          <p>The following terms are defined in the Fetch specification:
           [[!FETCH]]</p>
           <ul>
             <li><dfn data-cite="FETCH#concept-header-value">header
@@ -264,6 +264,8 @@
             <li>the <dfn data-cite=
             "FETCH#http-access-control-allow-headers"><code>Access-Control-Allow-Headers</code></dfn>
             header</li>
+            <li><dfn data-cite="FETCH#fetch-controller">fetch controller</dfn></li>
+            <li><dfn data-cite="FETCH#fetch-controller-conclude">conclude</dfn></li>
           </ul>
         </dd>
         <dt>URL</dt>
@@ -474,13 +476,15 @@
             </dl>
           </li>
           <li>
-            Let <var>handleBeaconDone</var> given <a>response</a> <var>res</var> be a call to
-            [=finalize and report timing=] with <var>res</var>, the
-            <var>entry settings object</var>, and <code>"beacon"</code>.
+            Let <var>controller</var> be null.
+          </li>
+          <li>
+            Let <var>handleBeaconDone</var> given <a>response</a> <var>res</var> be to
+            <a>conclude</a> <var>controller</var> given <code>"beacon"</code>.
           </li>
           <li>
             <a>Fetch</a> <var>req</var>, with <a>processResponseEndOfBody</a> set to
-            <var>handleBeaconDone</var>.
+            <var>handleBeaconDone</var>, and set <var>controller</var> to the result.
           </li>
         </ol>
       </li>
