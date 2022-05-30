@@ -476,15 +476,7 @@
             </dl>
           </li>
           <li>
-            Let <var>controller</var> be null.
-          </li>
-          <li>
-            Let <var>handleBeaconDone</var> given <a>response</a> <var>res</var> be to
-            <a>conclude</a> <var>controller</var> given <code>"beacon"</code>.
-          </li>
-          <li>
-            <a>Fetch</a> <var>req</var>, with <a>processResponseEndOfBody</a> set to
-            <var>handleBeaconDone</var>, and set <var>controller</var> to the result.
+            <a>Fetch</a> <var>req</var> with <a>initiatorType</a> set to "<code>beacon</code>".
           </li>
         </ol>
       </li>
