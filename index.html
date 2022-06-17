@@ -216,7 +216,7 @@
         </dd>
         <dt>Fetch</dt>
         <dd>
-          <p>The following terms are defined in the HTML specification:
+          <p>The following terms are defined in the Fetch specification:
           [[!FETCH]]</p>
           <ul>
             <li><dfn data-cite="FETCH#concept-header-value">header
@@ -240,6 +240,8 @@
             "FETCH#concept-request-body">body</dfn></li>
             <li>request <dfn data-cite=
             "FETCH#concept-request-mode">mode</dfn></li>
+            <li>request <dfn data-cite=
+            "FETCH#request-initiator-type">initiator type</dfn></li>
             <li>request <dfn data-cite=
             "FETCH#concept-request-credentials-mode">credentials
             mode</dfn></li>
@@ -471,16 +473,14 @@
                 <a>credentials mode</a>
               </dt>
               <dd><i>include</i></dd>
+              <dt>
+                <a>initiator type</a>
+              </dt>
+              <dd>"<code>beacon</code>"</dd>
             </dl>
           </li>
           <li>
-            Let <var>handleBeaconDone</var> given <a>response</a> <var>res</var> be a call to
-            [=finalize and report timing=] with <var>res</var>, the
-            <var>entry settings object</var>, and <code>"beacon"</code>.
-          </li>
-          <li>
-            <a>Fetch</a> <var>req</var>, with <a>processResponseEndOfBody</a> set to
-            <var>handleBeaconDone</var>.
+            <a>Fetch</a> <var>req</var>.
           </li>
         </ol>
       </li>
