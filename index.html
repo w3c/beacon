@@ -48,7 +48,8 @@
         value: 'Can I use Beacon?',
         href: 'http://caniuse.com/#feat=beacon'
       }]
-    }]
+    }],
+    xref: ["html", "fetch", "url", "webidl"]
   };
   </script>
 </head>
@@ -132,15 +133,15 @@
       &lt;/body&gt;
       &lt;/html&gt;
 </pre>
-    <p class="note">Above example uses <a><code>visibilitychange</code></a>
+    <p class="note">Above example uses [=Document/visibilitychange=]
     event defined in [[PAGE-VISIBILITY-2]] to trigger delivery of session data.
     This event is the only event that is guaranteed to fire on mobile devices
     when the page transitions to background state (e.g. when user switches to a
     different application, goes to homescreen, etc), or is being unloaded.
-    Developers should avoid relying on <a><code>unload</code></a> event because
-    it will not fire whenever a page is in a background state (i.e.
-    <a><code>visibilityState</code></a> equal to <a><code>hidden</code></a>) and
-    the process is terminated by the mobile OS.</p>
+    Developers should avoid relying on [=Window/unload=] event because it will
+    not fire whenever a page is in a background state (i.e.
+    {{Document/visibilityState}} equal to {{Document/hidden}} and the process is
+    terminated by the mobile OS.</p>
     <p>The requests initiated via the <a>sendBeacon()</a> method do not block
     or compete with time-critical work, may be prioritized by the user agent to
     improve network efficiency, and eliminate the need to use blocking
@@ -161,7 +162,7 @@
       the request method, provide custom request headers, or change other
       <a href="#sec-processing-model">processing properties</a> of the request
       and response. Applications that require non-default settings for such
-      requests should use the [[FETCH]] API with <a>keep-alive flag</a> set to
+      requests should use the [[FETCH]] API with [=request/keepalive=] set to
       <code>true</code>.
       </li>
     </ul>
@@ -180,134 +181,6 @@
     implemented in any manner, so long as the end result is equivalent. (In
     particular, the algorithms defined in this specification are intended to be
     easy to follow, and not intended to be performant.)</p>
-    <section>
-      <h2>Dependencies</h2>
-      <dl>
-        <dt>DOM</dt>
-        <dd>
-          <p>The following terms are defined in the DOM specification:
-          [[!DOM]]</p>
-          <ul>
-            <li>the <dfn data-cite="DOM#concept-document-url">document
-            URL</dfn></li>
-            <li><dfn data-cite="DOM#concept-document">document</dfn></li>
-          </ul>
-        </dd>
-        <dt>HTML</dt>
-        <dd>
-          <p>The following terms are defined in the HTML specification:
-          [[!HTML]]</p>
-          <ul>
-            <li><dfn data-cite="HTML#api-base-url">API base URL</dfn></li>
-            <li><dfn data-cite="HTML#entry-settings-object">entry settings
-            object</dfn></li>
-            <li><dfn data-cite=
-            "HTML#multipart/form-data-encoding-algorithm"><code>multipart/form-data</code>
-            boundary string</dfn></li>
-            <li><dfn data-cite=
-            "HTML#multipart/form-data-boundary-string"><code>multipart/form-data</code>
-            encoding algorithm</dfn></li>
-            <li>resource <dfn data-cite="HTML#origin" data-lt="resource origin"
-            data-lt-nodefault="" id="resource-origin">origin</dfn></li>
-            <li>the <code><dfn data-cite=
-            "HTML#navigator">Navigator</dfn></code> object</li>
-          </ul>
-        </dd>
-        <dt>Fetch</dt>
-        <dd>
-          <p>The following terms are defined in the Fetch specification:
-          [[!FETCH]]</p>
-          <ul>
-            <li><dfn data-cite="FETCH#concept-header-value">header
-            value</dfn></li>
-            <li><dfn data-cite="FETCH#concept-request">request</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-method">method</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-method">client</dfn></li>
-            <li>request <dfn data-cite="FETCH#concept-request-url" id=
-            "request-url" data-lt-nodefault="" data-lt=
-            "request url">url</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-header-list">header list</dfn></li>
-            <li>request <dfn data-cite="FETCH#concept-request-origin" id=
-            "request-origin" data-lt-nodefault="" data-lt=
-            "request origin">origin</dfn></li>
-            <li>request <dfn data-cite="FETCH#keep-alive-flag">keep-alive
-            flag</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-body">body</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-mode">mode</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#request-initiator-type">initiator type</dfn></li>
-            <li>request <dfn data-cite=
-            "FETCH#concept-request-credentials-mode">credentials
-            mode</dfn></li>
-            <li><dfn data-cite="FETCH#concept-response">response</dfn></li>
-            <li><dfn data-cite="FETCH#concept-fetch">fetch</dfn></li>
-            <li><dfn data-cite="FETCH#fetch-processresponseendofbody">processResponseEndOfBody</dfn></li>
-            <li><dfn data-cite="FETCH#finalize-and-report-timing">finalize and report timing</dfn></li>
-            <li><dfn data-cite=
-            "FETCH#http-network-or-cache-fetch">http-network-or-cache-fetch</dfn></li>
-            <li><dfn data-cite="FETCH#bodyinit">BodyInit</dfn></li>
-            <li><dfn data-cite=
-            "FETCH#cors-safelisted-request-header">CORS-safelisted
-            request-header</dfn></li>
-            <li><dfn data-cite=
-            "FETCH#concept-bodyinit-extract">Extract</dfn></li>
-            <li>the <dfn data-cite=
-            "FETCH#http-access-control-allow-credentials"><code>Access-Control-Allow-Credentials</code></dfn>
-            header</li>
-            <li>the <dfn data-cite=
-            "FETCH#http-access-control-allow-origin"><code>Access-Control-Allow-Origin</code></dfn>
-            header</li>
-            <li>the <dfn data-cite=
-            "FETCH#http-access-control-allow-headers"><code>Access-Control-Allow-Headers</code></dfn>
-            header</li>
-          </ul>
-        </dd>
-        <dt>URL</dt>
-        <dd>
-          <p>The following terms are defined in the URL specification:
-          [[!URL]]</p>
-          <ul>
-            <li><dfn data-cite="URL#concept-url-parser">URL parser</dfn></li>
-            <li><dfn data-cite="URL#concept-url-scheme">scheme</dfn></li>
-          </ul>
-        </dd>
-        <dt>Web IDL</dt>
-        <dd>
-          <p>The IDL fragments in this specification must be interpreted as
-          required for conforming IDL fragments, as described in the Web IDL
-          specification [[!WEBIDL]].</p>
-          <p>The following terms are defined in the Web IDL specification:</p>
-          <ul>
-            <li><dfn data-cite="WEBIDL#dfn-throw">throw</dfn></li>
-            <li><dfn data-cite=
-            "WEBIDL#idl-USVString"><code>USVString</code></dfn> type</li>
-            <li><dfn data-cite=
-            "WEBIDL#exceptiondef-typeerror"><code>TypeError</code></dfn>
-            type</li>
-          </ul>
-        </dd>
-        <dt>Page Visibility</dt>
-        <dd>
-          <p>The following term is defined in the Page Visibility
-          specification: [[!PAGE-VISIBILITY-2]]</p>
-          <ul>
-            <li><dfn data-cite=
-            "PAGE-VISIBILITY-2#dfn-visibilitychange"><code>visibilitychange</code></dfn></li>
-            <li><dfn data-cite=
-            "PAGE-VISIBILITY-2#dfn-unload"><code>unload</code></dfn></li>
-            <li><dfn data-cite=
-            "PAGE-VISIBILITY-2#dom-visibilitystate-hidden"><code>hidden</code></dfn></li>
-            <li><dfn data-cite=
-            "PAGE-VISIBILITY-2#dom-visibilitystate"><code>visibilityState</code></dfn></li>
-          </ul>
-        </dd>
-      </dl>
-    </section>
   </section>
   <section>
     <h2>Beacon</h2>
@@ -322,16 +195,15 @@
       <a><code>data</code></a> parameter to the URL provided by the <a href=
       "#url-parameter"><code>url</code></a> parameter:</p>
       <ul>
-        <li>The user agent MUST initiate a fetch with <a href=
-        "#concept-keep-alive-flag">keepalive</a> flag set, which restricts the
-        amount of data that can be queued by such requests to ensure that
-        beacon requests are able to complete quickly and in a timely manner.
+        <li>The user agent MUST initiate a fetch with [=request/keepalive=]
+        flag set, which restricts the amount of data that can be queued by such
+        requests to ensure that beacon requests are able to complete quickly and
+        in a timely manner.
         </li>
         <li>The user agent MUST schedule immediate transmission of all beacon
-        requests when the document <a><code>visibilityState</code></a>
-        transitions to <a><code>hidden</code></a>, and must allow all such
-        requests to run to completion without blocking other time-critical and
-        high-priority work.
+        requests when the document {{Document/visibilityState}} transitions to
+        {{Document/hidden}}, and must allow all such requests to run to
+        completion without blocking other time-critical and high-priority work.
         </li>
         <li>The user agent SHOULD schedule transmission of provided data to
         minimize resource (CPU and network) contention with other time-critical
@@ -355,7 +227,7 @@
         <p>The <a href="#url-parameter"><code>url</code></a> parameter
         indicates the URL where the data is to be transmitted.</p>
         <h4><dfn><code>data</code></dfn></h4>
-        <p>The <a><code>data</code></a> parameter is the <a>BodyInit</a> data
+        <p>The <a><code>data</code></a> parameter is the {{BodyInit}} data
         that is to be transmitted.</p>
       </div>
       <div>
@@ -367,12 +239,13 @@
         that can be sent via this API: this helps ensure that such requests are
         delivered successfully and with minimal impact on other user and
         browser activity. If the amount of <var>data</var> to be queued exceeds
-        the user agent limit (as defined in
-        <a>http-network-or-cache-fetch</a>), this method returns
-        <code>false</code>; a return value of <code>true</code> implies the
-        browser has queued the data for transfer. However, since the actual
-        data transfer happens asynchronously, this method does not provide any
-        information whether the data transfer has succeeded or not.</p>
+        the user agent limit (as defined in <a
+        data-cite="!fetch#concept-http-network-or-cache-fetch">HTTP-network-or-cache
+        fetch</a>), this method returns <code>false</code>; a return value of
+        <code>true</code> implies the browser has queued the data for transfer.
+        However, since the actual data transfer happens asynchronously, this
+        method does not provide any information whether the data transfer has
+        succeeded or not.</p>
       </div>
     </section>
     <section id="sec-processing-model">
@@ -381,19 +254,20 @@
       optional <var>data</var>, the following steps must be run:</p>
       <ol>
         <li>
-          <p>Set <var>base</var> to the <a>entry settings object</a>'s <a>API
-          base URL</a>.</p>
+          <p>Set <var>base</var> to [=this=]'s [=relevant settings object=]'s
+          [=environment settings object/API base URL=].</p>
         </li>
         <li>
-          <p>Set <var>origin</var> to the <a>entry settings object</a>'s
-          <a href="#resource-origin">origin</a>.</p>
+          <p>Set <var>origin</var> to [=this=]'s [=relevant settings object=]'s
+          [=environment settings object/origin=].</p>
         </li>
         <li>
           <p>Set <var>parsedUrl</var> to the result of the <a>URL parser</a>
           steps with <var>url</var> and <var>base</var>. If the algorithm
-          returns an error, or if <var>parsedUrl</var>'s <a>scheme</a> is not
-          "http" or "https", <a>throw</a> a "<code><a>TypeError</a></code>"
-          exception and terminate these steps.</p>
+          returns an error, or if <var>parsedUrl</var>'s [=url/scheme=] is not
+          "http" or "https", [=exception/throw=] a
+          "<code>{{TypeError}}</code>" exception and terminate these
+          steps.</p>
         </li>
         <li>Let <var>headerList</var> be an empty list.</li>
         <li>Let <var>corsMode</var> be "<code>no-cors</code>".</li>
@@ -401,19 +275,20 @@
           <p>If <var>data</var> is not <code>null</code>:</p>
           <ol>
             <li>Set <var>transmittedData</var> and <var>contentType</var> to the
-              result of <a data-lt="extract">extracting</a> <var>data</var>'s
+              result of [=BodyInit/extract|extracting=] <var>data</var>'s
               byte stream with the <var>keepalive flag</var> set.
             </li>
             <li>If the amount of data that can be queued to be sent by
-              <a href="#concept-keep-alive-flag">keepalive</a> enabled requests
-              is exceeded by the size of <var>transmittedData</var> (as defined
-              in <a>http-network-or-cache-fetch</a>), set the return value to
-              <code>false</code> and terminate these steps.
+              [=request/keepalive=] enabled requests is exceeded by the size of
+              <var>transmittedData</var> (as defined in <a
+              data-cite="!fetch#concept-http-network-or-cache-fetch">HTTP-network-or-cache
+              fetch</a>), set the return value to <code>false</code> and
+              terminate these steps.
               <p class="note">Requests initiated via the Beacon API automatically
-              set the <var>keepalive</var> flag, and developers can similarly set
-              the same flag manually when using the Fetch API. All requests with
-              this flag set share the same in-flight quota restrictions that is
-              enforced within the Fetch API.</p>
+              set the [=request/keepalive=] flag, and developers can similarly
+              set the same flag manually when using the Fetch API. All requests
+              with this flag set share the same in-flight quota restrictions
+              that is enforced within the Fetch API.</p>
             </li>
             <li>If <var>contentType</var> is not null:
               <ul>
@@ -437,43 +312,43 @@
             follows:</p>
             <dl>
               <dt>
-                <a>method</a>
+                [=request/method=]
               </dt>
               <dd><code>POST</code></dd>
               <dt>
-                <a>client</a>
+                [=request/client=]
               </dt>
-              <dd>The <a>entry settings object</a>
+              <dd>[=this=]'s [=relevant settings object=]</dd>
               <dt>
-                <a href="#request-url">url</a>
+                [=request/url=]
               </dt>
               <dd><var>parsedUrl</var></dd>
               <dt>
-                <a>header list</a>
+                [=request/header list=]
               </dt>
               <dd><var>headerList</var></dd>
               <dt>
-                <a href="#request-origin">origin</a>
+                [=request/origin=]
               </dt>
               <dd><i>origin</i></dd>
               <dt>
-                <a>keep-alive flag</a>
+                [=request/keepalive=]
               </dt>
               <dd><code>true</code></dd>
               <dt>
-                <a>body</a>
+                [=request/body=]
               </dt>
               <dd><var>transmittedData</var></dd>
               <dt>
-                <a>mode</a>
+                [=request/mode=]
               </dt>
               <dd><var>corsMode</var></dd>
               <dt>
-                <a>credentials mode</a>
+                [=request/credentials mode=]
               </dt>
               <dd><i>include</i></dd>
               <dt>
-                <a>initiator type</a>
+                [=request/initiator type=]
               </dt>
               <dd>"<code>beacon</code>"</dd>
             </dl>
@@ -518,10 +393,13 @@
       form-post respectively.
       </li>
       <li>Otherwise, a CORS preflight is made and the server needs to first
-      allow such requests by returning the appropriate set of CORS headers: <a>
+      allow such requests by returning the appropriate set of CORS headers:
+        <a data-cite="!fetch#http-access-control-allow-credentials">
         <code>Access-Control-Allow-Credentials</code></a>,
-        <a><code>Access-Control-Allow-Origin</code></a>,
-        <a><code>Access-Control-Allow-Headers</code></a>.
+        <a data-cite="!fetch#http-access-control-allow-origin">
+        <code>Access-Control-Allow-Origin</code></a>,
+        <a data-cite="!fetch#http-access-control-allow-headers">
+        <code>Access-Control-Allow-Headers</code></a>.
       </li>
     </ul>
     <p>As such, from the security perspective, the Beacon API is subject to
