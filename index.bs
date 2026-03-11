@@ -1,0 +1,365 @@
+<pre class='metadata'>
+Title: Beacon
+Shortname: beacon
+Status: ED
+Group: webperf
+URL: https://w3c.github.io/beacon/
+TR: https://www.w3.org/TR/beacon/
+Editor: Ilya Grigorik, Shopify https://shopify.com/, igrigorik@gmail.com, w3cid 56102
+Editor: Alois Reitbauer, Compuware Corp., alois.reitbauer@compuware.com, w3cid 48276
+Former Editor: Arvind Jain, Google Inc., arvind@google.com, w3cid 45188
+Former Editor: Jatinder Mann, Microsoft Corp., jmann@microsoft.com, w3cid 44357
+Repository: w3c/beacon
+Mailing List: public-web-perf@w3.org
+Mailing List Archives: https://lists.w3.org/Archives/Public/public-web-perf/
+Test Suite: https://w3c-test.org/beacon/
+Abstract: This specification defines an interface that web developers can use to schedule asynchronous and non-blocking delivery of data that minimizes resource contention with other time-critical operations, while ensuring that such requests are still processed and delivered to destination.
+Level: none
+Complain About: accidental-2119 yes
+Markup Shorthands: markdown no
+</pre>
+
+<pre class=link-defaults>
+spec:fetch; type:dfn; for:/; text:request
+spec:fetch; type:dfn; text:fetch
+spec:fetch; type:dfn; text:CORS-safelisted request-header
+</pre>
+
+<pre class=anchors>
+urlPrefix: https://fetch.spec.whatwg.org/; spec: FETCH; type: dfn
+    text: HTTP-network-or-cache fetch; url: #concept-http-network-or-cache-fetch
+    text: Access-Control-Allow-Credentials; url: #http-access-control-allow-credentials
+    text: Access-Control-Allow-Origin; url: #http-access-control-allow-origin
+    text: Access-Control-Allow-Headers; url: #http-access-control-allow-headers
+</pre>
+
+<style>
+.note:not(.no-marker)::before {
+  content: "Note";
+}
+</style>
+
+<h2 id="introduction" class="informative">Introduction</h2>
+
+<em>This section is non-normative.</em>
+
+<p>Web applications often need to issue requests that report events, state
+updates, and analytics to one or more servers. Such requests typically do
+not require response processing on the client (e.g. result in 204, or 200
+HTTP response codes with an empty response body), and should not compete
+for network and compute resources with other high priority operations such
+as fetching critical resources, reacting to input, running animations, and
+so on. However, such one-way requests (beacons), are also responsible for
+delivering critical application and measurement data, forcing developers to
+use costly methods to ensure their delivery:</p>
+<ul>
+  <li>Developers opt for immediate delivery of each beacon, instead of
+  coalescing and deferring their delivery because this provides improved
+  delivery rates. Deferring delivery may mean that the beacon request may
+  not have sufficient time to complete successfully, which leads to loss of
+  important application data.</li>
+  <li>Developers opt for issuing blocking requests via synchronous
+  XMLHttpRequest's, inserting no-op busy loops, or using other techniques
+  that block the user agent from executing time-critical operations (e.g.
+  click, unload, and other handlers) and hurt the user experience. The
+  blocking behavior is used to provide improved delivery rate, as it
+  prevents the user agent and the operating system from cancelling the
+  request if the page is unloaded, suspended, or killed by the system.</li>
+</ul>
+<p>The mismatch between above delivery and processing requirements leaves
+most developers with a tough choice and widespread adoption of blocking
+techniques that hurt the user experience. This specification defines an
+interface that web developers can use to schedule asynchronous and
+non-blocking delivery of data that minimizes resource contention with other
+time-critical operations, while ensuring that such requests are still
+processed and delivered to destination:</p>
+<ul>
+  <li>Beacon requests are prioritized to avoid competing with time-critical
+  operations and higher priority network requests.</li>
+  <li>Beacon requests may be efficiently coalesced by the user agent to
+  optimize energy use on mobile devices.</li>
+  <li>Beacon requests are guaranteed to be initiated before page is
+  unloaded and are allowed to run to completion without requiring blocking
+  requests or other techniques that block processing of user interactive
+  events.</li>
+</ul>
+<p>The following example shows use of the {{Navigator/sendBeacon()}} method to
+deliver event, click, and analytics data:</p>
+<pre class='example highlight' id="example-sendbeacon">
+  &lt;html&gt;
+  &lt;script&gt;
+    // emit non-blocking beacon to record client-side event
+    function reportEvent(event) {
+      var data = JSON.stringify({
+        event: event,
+        time: performance.now()
+      });
+      navigator.sendBeacon('/collector', data);
+    }
+
+    // emit non-blocking beacon with session analytics as the page
+    // transitions to background state (Page Visibility API)
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden') {
+        var sessionData = buildSessionReport();
+        navigator.sendBeacon('/collector', sessionData);
+      }
+    });
+  &lt;/script&gt;
+
+  &lt;body&gt;
+   &lt;a href='http://www.w3.org/' onclick='reportEvent(this)'&gt;
+   &lt;button onclick="reportEvent('some event')"&gt;Click me&lt;/button&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+</pre>
+<p class="note"><span class="allow-2119">Above example uses the <a href="https://html.spec.whatwg.org/multipage/interaction.html#page-visibility-change-steps">visibilitychange</a>
+event defined in [[PAGE-VISIBILITY]] to trigger delivery of session data.
+This event is the only event that is guaranteed to fire on mobile devices
+when the page transitions to background state (e.g. when user switches to a
+different application, goes to homescreen, etc), or is being unloaded.
+Developers should avoid relying on <a href="https://html.spec.whatwg.org/multipage/indices.html#event-unload">unload</a> event because it will
+not fire whenever a page is in a background state (i.e.
+{{Document/visibilityState}} equal to {{Document/hidden}}) and the process is
+terminated by the mobile OS.</span></p>
+<p>The requests initiated via the {{Navigator/sendBeacon()}} method do not block
+or compete with time-critical work, may be prioritized by the user agent to
+improve network efficiency, and eliminate the need to use blocking
+operations to ensure delivery of beacon data.</p>
+<p>What {{Navigator/sendBeacon()}} does not do and is not intended to solve:</p>
+<ul>
+  <li>The {{Navigator/sendBeacon()}} method does not provide special handling for
+  offline storage or delivery. A beacon request is like any other request
+  and may be combined with [[SERVICE-WORKERS]] to provide offline
+  functionality where necessary.
+  </li>
+  <li>The {{Navigator/sendBeacon()}} method is not intended to provide background
+  synchronization or transfer capabilities. The user agent restricts the
+  maximum accepted payload size to ensure that beacon requests are able to
+  complete quickly and in a timely manner.
+  </li>
+  <li>The {{Navigator/sendBeacon()}} method does not provide ability to customize
+  the request method, provide custom request headers, or change other
+  <a href="#sec-processing-model">processing properties</a> of the request
+  and response. Applications that require non-default settings for such
+  requests should use the [[FETCH]] API with [=request/keepalive=] set to
+  <code>true</code>.
+  </li>
+</ul>
+
+<h2 id="beacon">Beacon</h2>
+
+<h3 id="sendbeacon-method" data-dfn-for="Navigator" data-link-for="Navigator"><code><dfn data-export>sendBeacon()</dfn></code> Method</h3>
+<pre class="idl">
+partial interface Navigator {
+    boolean sendBeacon(USVString url, optional BodyInit? data = null);
+};
+</pre>
+<p>The {{Navigator/sendBeacon()}} method transmits data provided by the
+<a href="#dom-navigator-sendbeacon-url-data-data"><code>data</code></a> parameter to the URL provided by the <a href="#url-parameter"><code>url</code></a> parameter:</p>
+<ul>
+  <li>The user agent MUST initiate a [=fetch=] with [=request/keepalive=]
+  flag set, which restricts the amount of data that can be queued by such
+  requests to ensure that beacon requests are able to complete quickly and
+  in a timely manner.
+  </li>
+  <li>The user agent MUST schedule immediate transmission of all beacon
+  requests when the document {{Document/visibilityState}} transitions to
+  {{Document/hidden}}, and must allow all such requests to run to
+  completion without blocking other time-critical and high-priority work.
+  </li>
+  <li>The user agent SHOULD schedule transmission of provided data to
+  minimize resource (CPU and network) contention with other time-critical
+  and high priority work.</li>
+  <li>The user agent MAY delay transmission of provided data to optimize
+  network and energy efficiency - e.g. deliver immediately if the network
+  is active, or wait until network interface is active. However, the user
+  agent SHOULD NOT delay transmission indefinitely and ensure that
+  pending transmissions are periodically flushed even if there is no
+  other network activity.</li>
+</ul>
+<div class="note">
+  Beacon API does not provide a response callback. The server is
+  encouraged to omit returning a response body for such requests (e.g.
+  respond with <code>204 No Content</code>).
+</div>
+<div>
+  <h4 id="parameters">Parameters</h4>
+  <h4 id="url-parameter-heading"><dfn id="url-parameter" data-lt-nodefault data-lt="url parameter"><code>url</code></dfn></h4>
+  <p>The <a href="#url-parameter"><code>url</code></a> parameter
+  indicates the URL where the data is to be transmitted.</p>
+  <h4 id="data-parameter"><dfn id="data-dfn" data-noexport><code>data</code></dfn></h4>
+  <p>The <a href="#dom-navigator-sendbeacon-url-data-data"><code>data</code></a> parameter is the {{BodyInit}} data
+  that is to be transmitted.</p>
+</div>
+<div>
+  <h4 id="return-value">Return Value</h4>
+  <p>The {{Navigator/sendBeacon()}} method returns true if the user agent is
+  able to successfully queue the data for transfer. Otherwise it returns
+  false.</p>
+  <p class="note">The user agent imposes limits on the amount of data
+  that can be sent via this API: this helps ensure that such requests are
+  delivered successfully and with minimal impact on other user and
+  browser activity. If the amount of <var>data</var> to be queued exceeds
+  the user agent limit (as defined in [=HTTP-network-or-cache fetch=]),
+  this method returns <code>false</code>; a return value of
+  <code>true</code> implies the browser has queued the data for transfer.
+  However, since the actual data transfer happens asynchronously, this
+  method does not provide any information whether the data transfer has
+  succeeded or not.</p>
+</div>
+
+<h2 id="sec-processing-model">Processing Model</h2>
+<p>On calling the {{Navigator/sendBeacon()}} method with <var>url</var> and
+optional <var>data</var>, the following steps must be run:</p>
+<ol>
+  <li>
+    <p>Set <var>base</var> to [=this=]'s [=relevant settings object=]'s
+    [=environment settings object/API base URL=].</p>
+  </li>
+  <li>
+    <p>Set <var ignore>origin</var> to [=this=]'s [=relevant settings object=]'s
+    [=environment settings object/origin=].</p>
+  </li>
+  <li>
+    <p>Set <var>parsedUrl</var> to the result of the [=URL parser=]
+    steps with <var>url</var> and <var>base</var>. If the algorithm
+    returns an error, or if <var>parsedUrl</var>'s [=url/scheme=] is not
+    "http" or "https", [=exception/throw=] a
+    "<code>{{TypeError}}</code>" exception and terminate these
+    steps.</p>
+  </li>
+  <li>Let <var>headerList</var> be an empty list.</li>
+  <li>Let <var>corsMode</var> be "<code>no-cors</code>".</li>
+  <li>
+    <p>If <var>data</var> is not <code>null</code>:</p>
+    <ol>
+      <li>Set <var>transmittedData</var> and <var>contentType</var> to the
+        result of [=BodyInit/extract|extracting=] <var>data</var>'s
+        byte stream with the <var ignore>keepalive flag</var> set.
+      </li>
+      <li>If the amount of data that can be queued to be sent by
+        [=request/keepalive=] enabled requests is exceeded by the size of
+        <var>transmittedData</var> (as defined in [=HTTP-network-or-cache fetch=]),
+        set the return value to <code>false</code> and
+        terminate these steps.
+        <p class="note"><span class="allow-2119">Requests initiated via the Beacon API automatically
+        set the [=request/keepalive=] flag, and developers can similarly
+        set the same flag manually when using the Fetch API. All requests
+        with this flag set share the same in-flight quota restrictions
+        that is enforced within the Fetch API.</span></p>
+      </li>
+      <li>If <var>contentType</var> is not null:
+        <ul>
+          <li>Set <var>corsMode</var> to "<code>cors</code>".</li>
+          <li>If <var>contentType</var> value is a [=CORS-safelisted
+          request-header=] value for the <code>Content-Type</code>
+          header, set <var>corsMode</var> to "<code>no-cors</code>".
+          </li>
+          <li>Append a <code>Content-Type</code> header with value
+          <var>contentType</var> to <var>headerList</var>.</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>Set the return value to <code>true</code>, return the
+  {{Navigator/sendBeacon()}} call, and continue to run the following steps in
+  parallel:
+    <ol>
+      <li>
+        <p>Let <var>req</var> be a new [=request=], initialized as
+        follows:</p>
+        <dl>
+          <dt>[=request/method=]</dt>
+          <dd><code>POST</code></dd>
+          <dt>[=request/client=]</dt>
+          <dd>[=this=]'s [=relevant settings object=]</dd>
+          <dt>[=request/url=]</dt>
+          <dd><var>parsedUrl</var></dd>
+          <dt>[=request/header list=]</dt>
+          <dd><var>headerList</var></dd>
+          <dt>[=request/origin=]</dt>
+          <dd><var ignore>origin</var></dd>
+          <dt>[=request/keepalive=]</dt>
+          <dd><code>true</code></dd>
+          <dt>[=request/body=]</dt>
+          <dd><var>transmittedData</var></dd>
+          <dt>[=request/mode=]</dt>
+          <dd><var>corsMode</var></dd>
+          <dt>[=request/credentials mode=]</dt>
+          <dd><code>include</code></dd>
+          <dt>[=request/initiator type=]</dt>
+          <dd>"<code>beacon</code>"</dd>
+        </dl>
+      </li>
+      <li>
+        [=Fetch=] <var>req</var>.
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<h2 id="privacy-and-security" class="informative">Privacy and Security</h2>
+
+<em>This section is non-normative.</em>
+
+<p>The {{Navigator/sendBeacon()}} interface provides an asynchronous and
+non-blocking mechanism for delivery of data. This API can be used to:</p>
+<ul>
+  <li>Report client-side events to the server. The delivery is prioritized
+  and scheduled by the user agent such that it does not block other
+  interactive work and makes efficient use of system resources.</li>
+  <li>Report session data when the page transitions to background state or
+  is being unloaded, without blocking the user agent.</li>
+  <li>Other use cases that require delivery of small payloads and do not
+  expect a response callback.</li>
+</ul>
+<p>The delivered data might contain potentially sensitive information, for
+example, data about a user's activity on a web page, to a server. While
+this can have privacy implications for the user, existing methods, such as
+scripted form-submit, image beacons, and XHR/fetch requests provide similar
+capabilities, but come with various and costly performance tradeoffs: the
+requests can be aborted by the user agent unless the developer blocks the
+user agent from processing other events (e.g. by invoking a synchronous
+request, or spinning in an empty loop), and the user agent is unable to
+prioritize and coalesce such requests to optimize use of system
+resources.</p>
+<p>A request initiated by {{Navigator/sendBeacon()}} is subject to following
+properties:</p>
+<ul>
+  <li>If the request does not contain a payload, or the request
+  <code>Content-Type</code> is a [=CORS-safelisted request-header=],
+  then the request mode is `no-cors`—similar to an image beacon or
+  form-post respectively.
+  </li>
+  <li>Otherwise, a CORS preflight is made and the server needs to first
+  allow such requests by returning the appropriate set of CORS headers:
+    [=Access-Control-Allow-Credentials=],
+    [=Access-Control-Allow-Origin=],
+    [=Access-Control-Allow-Headers=].
+  </li>
+</ul>
+<p>As such, from the security perspective, the Beacon API is subject to
+same security policies as the current methods in use by developers.
+Similarly, from the privacy perspective, the resulting requests are
+initiated immediately when the API is called, or upon a page visibility
+change, which restricts the exposed information (e.g. user's IP address) to
+existing lifecycle events accessible to the developers. However, user
+agents might consider alternative methods to surface such requests to
+provide transparency to users.</p>
+<p>Compared to the alternatives, the {{Navigator/sendBeacon()}} API does apply two
+restrictions: there is no callback method, and the payload size can be
+restricted by the user agent. Otherwise, the {{Navigator/sendBeacon()}} API is not
+subject to any additional restrictions. The user agent ought not skip or
+throttle processing of {{Navigator/sendBeacon()}} calls, as they can contain
+critical application state, events, and analytics data. Similarly, the user
+agent ought not disable {{Navigator/sendBeacon()}} when in "private browsing" or
+equivalent mode, both to avoid breaking the application and to avoid
+leaking that the user is in such mode.</p>
+
+<h2 id="acknowledgments" class="appendix">Acknowledgments</h2>
+<p>Thanks to Alois Reitbauer, Arvind Jain, Anne van Kesteren, Boris
+Zbarsky, Chase Douglas, Daniel Austin, Jatinder Mann, James Simonsen, Jason
+Weber, Jonas Sicking, Nick Doty, Philippe Le Hegaret, Todd Reifsteck, Tony
+Gentilcore, William Chan, and Yoav Weiss for their contributions to this
+work.</p>
