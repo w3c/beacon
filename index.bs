@@ -85,7 +85,7 @@ processed and delivered to destination:</p>
 </ul>
 <p>The following example shows use of the {{Navigator/sendBeacon()}} method to
 deliver event, click, and analytics data:</p>
-<pre class='example highlight' id="example-sendbeacon">
+<pre class='example highlight' id="example-sendbeacon" oldids="example-1">
   &lt;html&gt;
   &lt;script&gt;
     // emit non-blocking beacon to record client-side event
@@ -149,8 +149,8 @@ operations to ensure delivery of beacon data.</p>
 
 <h2 id="beacon">Beacon</h2>
 
-<h3 id="sendbeacon-method" data-dfn-for="Navigator" data-link-for="Navigator"><code><dfn data-export>sendBeacon()</dfn></code> Method</h3>
-<pre class="idl">
+<h3 id="sendbeacon-method" data-dfn-for="Navigator" data-link-for="Navigator" oldids="idl-def-navigator-sendbeacon-url-data"><code><dfn data-export>sendBeacon()</dfn></code> Method</h3>
+<pre class="idl" id=idl-def-navigator-partial-1>
 partial interface Navigator {
     boolean sendBeacon(USVString url, optional BodyInit? data = null);
 };
@@ -185,10 +185,10 @@ partial interface Navigator {
 </div>
 <div>
   <h4 id="parameters">Parameters</h4>
-  <h4 id="url-parameter-heading"><dfn id="url-parameter" data-lt-nodefault data-lt="url parameter"><code>url</code></dfn></h4>
+  <h4 id="url-parameter-heading" oldids="url"><dfn id="url-parameter" data-lt-nodefault data-lt="url parameter"><code>url</code></dfn></h4>
   <p>The <a href="#url-parameter"><code>url</code></a> parameter
   indicates the URL where the data is to be transmitted.</p>
-  <h4 id="data-parameter"><dfn id="data-dfn" data-noexport><code>data</code></dfn></h4>
+  <h4 id="data-parameter" oldids="data"><dfn id="data-dfn" data-noexport oldids="dfn-data"><code>data</code></dfn></h4>
   <p>The <a href="#dom-navigator-sendbeacon-url-data-data"><code>data</code></a> parameter is the {{BodyInit}} data
   that is to be transmitted.</p>
 </div>
@@ -363,3 +363,5 @@ Zbarsky, Chase Douglas, Daniel Austin, Jatinder Mann, James Simonsen, Jason
 Weber, Jonas Sicking, Nick Doty, Philippe Le Hegaret, Todd Reifsteck, Tony
 Gentilcore, William Chan, and Yoav Weiss for their contributions to this
 work.</p>
+<!-- Keeps ReSpec's #conformance anchor working; Bikeshed's Conformance section is #w3c-conformance. -->
+<div id=conformance></div>
